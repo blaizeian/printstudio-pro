@@ -34,7 +34,7 @@ app.use(cors({
 }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, 'private')));
+//app.use(express.static(path.join(__dirname, 'private')));
 
 // Connect to XAMPP MySQL instance database
 // [PATCH] DB connection now uses .env variables instead of hardcoded values
