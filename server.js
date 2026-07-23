@@ -204,17 +204,20 @@ app.get('/api/analytics', verifyRole(['admin']), async (req, res) => {
     if (type === 'daily') {
         sqlQuery = `SELECT DATE_FORMAT(created_at, '%H:00') as label, SUM(total_amount) as total 
                     FROM orders WHERE DATE(created_at) = ? 
-                    GROUP BY HOUR(created_at) ORDER BY HOUR(created_at) ASC`;
+                    GROUP BY HOUR(created_at), DATE_FORMAT(created_at, '%H:00') 
+                    ORDER BY HOUR(created_at) ASC`;
         params = [start];
     } else if (type === 'weekly') {
         sqlQuery = `SELECT DATE_FORMAT(created_at, '%a %d') as label, SUM(total_amount) as total 
                     FROM orders WHERE DATE(created_at) BETWEEN ? AND ? 
-                    GROUP BY DATE(created_at) ORDER BY DATE(created_at) ASC`;
+                    GROUP BY DATE(created_at), DATE_FORMAT(created_at, '%a %d') 
+                    ORDER BY DATE(created_at) ASC`;
         params = [start, end];
     } else if (type === 'monthly') {
         sqlQuery = `SELECT DATE_FORMAT(created_at, '%b %d') as label, SUM(total_amount) as total 
                     FROM orders WHERE DATE(created_at) BETWEEN ? AND ? 
-                    GROUP BY DATE(created_at) ORDER BY DATE(created_at) ASC`;
+                    GROUP BY DATE(created_at), DATE_FORMAT(created_at, '%b %d') 
+                    ORDER BY DATE(created_at) ASC`;
         params = [start, end];
     } else if (type === 'yearly') {
         const year = start.substring(0, 4) || new Date().getFullYear();
