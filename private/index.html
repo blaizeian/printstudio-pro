@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PrintStudio Pos - Terminal</title>
+    <style>
+        @media print {
+    /* Hide everything on the main screen */
+    body * { visibility: hidden; }
+    
+    /* Show only the print window/content */
+    .print-only { visibility: visible; }
+}
+        
+    </style>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-stone-900 text-stone-100 font-sans min-h-dvh flex flex-col md:flex-row antialiased">
+
+    <!-- Mobile Header Bar (Only visible on phones) -->
+    <header
+        class="md:hidden flex items-center justify-between bg-emerald-950 text-emerald-300 p-4 border-b border-emerald-900 sticky top-0 z-30">
+        <div class="flex items-center space-x-3">
+            <div class="bg-emerald-600 p-2 rounded-xl text-lg font-black text-white shadow-lg">🖨️</div>
+            <h1 class="text-sm font-black text-white tracking-wider uppercase">PrintStudio</h1>
+        </div>
+        <button onclick="toggleMobileMenu()" class="bg-emerald-900/50 p-2 rounded-xl text-white focus:outline-none">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+            </svg>
+        </button>
+    </header>
+
+    <!-- GREEN SIDEBAR NAVIGATION PANEL -->
+    <!-- GREEN SIDEBAR NAVIGATION PANEL -->
+    <!-- GREEN SIDEBAR NAVIGATION PANEL (Sticky Desktop + Mobile Drawer) -->
+    <aside id="sidebar"
+        class="fixed inset-y-0 left-0 z-40 w-64 bg-emerald-950 h-screen text-emerald-300 p-6 flex flex-col justify-between border-r border-emerald-900 shadow-2xl transform -translate-x-full md:translate-x-0 md:sticky md:top-0 transition-transform duration-300 shrink-0">
+        <!-- Top Section: Logo & Links -->
+        <div class="flex flex-col space-y-8">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3 px-2">
+                    <div class="bg-emerald-600 p-2 rounded-xl text-lg font-black text-white shadow-lg">🖨️</div>
+                    <div>
+                        <h1 class="text-sm font-black text-white tracking-wider uppercase">PrintStudio</h1>
+                        <p class="text-[10px] text-emerald-400 font-bold tracking-widest">PRO SYSTEM</p>
+                    </div>
+                </div>
+                <!-- Close button for mobile drawer -->
+                <button onclick="toggleMobileMenu()"
+                    class="md:hidden text-emerald-400 hover:text-white p-1 text-lg font-bold">
+                    ✕
+                </button>
+            </div>
+    
+            <!-- ✅ FIX: Change the nav class to flex-col permanently -->
+            <nav class="flex flex-col space-y-1.5">
+                <a href="/"
+                    class="flex items-center space-x-3 px-4 py-3 rounded-xl font-bold text-sm transition-all text-emerald-400/80 hover:bg-emerald-900/50 hover:text-emerald-200">
+                    <span>🖥️</span><span>Terminal</span>
+                </a>
+                <a href="/history" data-vendor-exclude
+                    class="flex items-center space-x-3 px-4 py-3 rounded-xl font-bold text-sm transition-all text-emerald-400/80 hover:bg-emerald-900/50 hover:text-emerald-200">
+                    <span>📊</span><span>Archive</span>
+                </a>
+                <a href="/analytics" data-admin-only
+                    class="flex items-center space-x-3 px-4 py-3 rounded-xl font-bold text-sm transition-all text-emerald-400/80 hover:bg-emerald-900/50 hover:text-emerald-200">
+                    <span>📈</span><span>Analytics</span>
+                </a>
+                <a href="/inventory" data-admin-only
+                    class="flex items-center space-x-3 px-4 py-3 rounded-xl font-bold text-sm transition-all text-emerald-400/80 hover:bg-emerald-900/50 hover:text-emerald-200">
+                    <span>📦</span><span>Catalog</span>
+                </a>
+                <a href="/reports" data-admin-only
+                    class="flex items-center space-x-3 px-4 py-3 rounded-xl font-bold text-sm transition-all text-emerald-400/80 hover:bg-emerald-900/50 hover:text-emerald-200">
+                    <span>📄</span><span>reports</span>
+                </a>
+                <a href="/cashiers" data-admin-only
+                    class="flex items-center space-x-3 px-4 py-3 rounded-xl font-bold text-sm transition-all text-emerald-400/80 hover:bg-emerald-900/50 hover:text-emerald-200">
+                    <span>👥</span><span>Cashiers</span>
+                </a>
+                <a href="/vendor-sales" data-vendor-only
+                id="vendorSalesNavLink"
+                    class="hidden text-sm font-semibold bg-emerald-950/60 text-emerald-400 px-3 py-1.5 rounded-lg border border-emerald-900/50 hover:bg-emerald-900 transition">
+                    📊 My Sales Ledger
+                </a>
+                <a href="/loans" data-admin-only
+                    class="flex items-center space-x-3 px-4 py-3 rounded-xl font-bold text-sm transition-all bg-emerald-900/80 text-white shadow-lg">
+                    <span>💳</span><span>Loans Ledger</span>
+                </a>
+
+                <a href="/messages" data-admin-only
+                    class="flex items-center space-x-3 px-4 py-3 rounded-xl font-bold text-sm transition-all text-emerald-400/80 hover:bg-emerald-900/50 hover:text-emerald-200">
+                    <span>💬</span><span>Messages</span>
+                </a>
+                <a href="/account"
+                    class="flex items-center space-x-3 px-4 py-3 rounded-xl font-bold text-sm transition-all text-stone-400 hover:bg-stone-800 hover:text-stone-200">
+                    <span>⚙️</span><span>Settings</span>
+                </a>
+
+
+            </nav>
+        </div>
+    
+        <!-- Bottom Section: Logout & Operator Info -->
+        <div class="space-y-4">
+            <div class="border-t border-emerald-900 pt-4">
+                <button id="logoutBtn"
+                    class="flex items-center space-x-3 px-4 py-3 w-full text-red-400 hover:bg-red-900/20 rounded-xl font-bold text-sm transition-all">
+                    <span>🚪</span><span>Logout</span>
+                </button>
+            </div>
+            <div class="border-t border-emerald-900 pt-4 flex items-center space-x-3 px-2">
+                <div
+                    class="w-8 h-8 rounded-full bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-xs font-black text-emerald-400">
+                    OP</div>
+                <div>
+                    <p class="text-xs font-bold text-white leading-tight">Main Counter</p>
+                    <span id="live-clock" class="text-[10px] font-mono font-medium text-emerald-600">00:00:00 AM</span>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- CORE INTERFACE AREA -->
+    <main class="flex-1 flex flex-col lg:flex-row min-w-0">
+
+        <!-- PRODUCT SELECTION CATALOG & ADMINISTRATIVE UTILITY -->
+        <section class="flex-1 p-6 md:p-8 overflow-y-auto space-y-8">
+            <div>
+                <h2 class="text-2xl font-black text-white tracking-tight">Print Matrix</h2>
+                <p class="text-xs text-stone-400 mt-1">Select digital media formats or materials to add to the checkout
+                    ledger.</p>
+            </div>
+
+            <!-- DYNAMIC CATEGORY FILTER ROW -->
+            <div class="flex flex-wrap gap-2" id="category-menu">
+                <!-- Dynamic filter pills go here -->
+            </div>
+
+            <!-- CATALOG PRODUCT GRID DISPLAY -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4" id="catalog-grid">
+                <!-- Injected by JavaScript -->
+            </div>
+
+            <!-- INLINE CATALOG MANAGEMENT COMPONENT -->
+            
+        </section>
+
+        <!-- CHECKOUT PANEL -->
+        <section
+            class="w-full lg:w-96 bg-stone-950 border-t lg:border-t-0 lg:border-l border-stone-800 flex flex-col shrink-0 h-[600px] lg:h-screen sticky top-0">
+            <div class="p-6 border-b border-stone-800 flex items-center justify-between">
+                <h3 class="font-black text-sm tracking-wider uppercase text-stone-300">Active Ledger</h3>
+                <span
+                    class="bg-emerald-950 border border-emerald-800 text-emerald-400 text-xs font-bold px-2.5 py-1 rounded-full"
+                    id="cart-count">0 Items</span>
+            </div>
+
+            <div class="flex-1 overflow-y-auto p-6 space-y-3" id="cart-container">
+                <div class="text-center py-12 text-stone-500 text-xs font-medium">Ledger is currently empty.</div>
+            </div>
+
+
+            <!-- Loan Section (Visible only to Admin and Cashier) -->
+            <div id="loan-section" class="hidden space-y-3 pt-3 border-t border-stone-800/60 transition-all duration-300">
+                <label
+                    class="flex items-center space-x-2.5 cursor-pointer bg-stone-900/50 hover:bg-stone-900 p-2.5 rounded-xl border border-stone-800/80 transition-all">
+                    <input type="checkbox" id="loan-checkbox" onchange="toggleLoanFields()"
+                        class="rounded bg-stone-900 border-stone-700 text-emerald-500 focus:ring-emerald-500 w-4 h-4 shadow-sm">
+                    <span class="text-xs font-bold text-stone-200 flex items-center gap-1.5">
+                        <svg class="w-3.5 h-3.5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+                            </path>
+                        </svg>
+                        Give out on loan?
+                    </span>
+                </label>
+            
+                <!-- Collapsible Mobile-Responsive Input Fields -->
+                <div id="loan-fields"
+                    class="hidden space-y-2.5 p-3 bg-gradient-to-br from-stone-900 via-stone-900/90 to-emerald-950/20 border border-emerald-500/20 rounded-xl shadow-lg">
+                    <div class="flex items-center justify-between pb-1 border-b border-stone-800/60">
+                        <span class="text-[10px] font-extrabold uppercase tracking-wider text-emerald-400">Credit Record
+                            Details</span>
+                        <span class="text-[10px] text-stone-500">Required fields</span>
+                    </div>
+            
+                    <div>
+                        <label class="block text-[10px] uppercase font-bold text-stone-400 mb-1">Customer Name</label>
+                        <input type="text" id="customer-name" placeholder="Enter full name"
+                            class="w-full bg-stone-950/80 border border-stone-800 rounded-lg px-3 py-2 text-xs text-stone-200 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] uppercase font-bold text-stone-400 mb-1">Customer Phone</label>
+                        <input type="tel" id="customer-phone" placeholder="0712345678" maxlength="10" inputmode="numeric"
+                            oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);"
+                            class="w-full bg-stone-950/80 border border-stone-800 rounded-lg px-3 py-2 text-xs text-stone-200 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] uppercase font-bold text-stone-400 mb-1">Amount Paid Now (Deposit)</label>
+                        <input type="number" id="loan-deposit" oninput="updateRemainingBalance()" placeholder="0.00" min="0"
+                            step="any"
+                            class="w-full bg-stone-950/80 border border-stone-800 rounded-lg px-3 py-2 text-xs text-stone-200 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all">
+                    </div>
+            
+                    <!-- Live Remaining Balance UI -->
+                    <div id="remaining-balance-container"
+                        class="hidden pt-2 mt-1 border-t border-stone-800/60 flex justify-between items-center text-xs px-2 py-1.5 bg-amber-500/10 border border-amber-500/20 rounded-lg">
+                        <span class="text-amber-300/90 font-medium flex items-center gap-1">
+                            <svg class="w-3.5 h-3.5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            Remaining Loan Balance:
+                        </span>
+                        <span id="remaining-balance-display" class="font-extrabold text-amber-400 text-sm">0.00</span>
+                    </div>
+                </div>
+            </div>
+
+        
+            <div class="p-6 border-t border-stone-800 bg-stone-950/50 space-y-4">
+                <div class="space-y-1.5 text-xs font-medium text-stone-400">
+                    <div class="flex justify-between"><span>Tax (0%)</span><span id="summary-tax">ksh0.00</span></div>
+                    <div class="flex justify-between text-base font-black text-white pt-2 border-t border-stone-800/60">
+                        <span>Grand Total</span><span id="summary-total">ksh0.00</span>
+                    </div>
+                </div>
+                <!-- Checkout Actions Container -->
+                <div class="mt-6 flex gap-3">
+                
+                    <!-- 1. Print Receipt Button -->
+                    <button onclick="printReceipt()"
+                        class="bg-stone-700 hover:bg-stone-600 text-stone-200 px-5 py-3 rounded-xl font-bold transition-all shadow-sm">
+                        🖨️ Preview & Print
+                    </button>
+                
+                    <!-- 2. Complete Payment Button -->
+                    <button id="checkout-btn" onclick="processCheckout(event)"
+                        class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white px-5 py-3 rounded-xl font-bold transition-all shadow-lg">
+                        Complete Payment
+                    </button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+
+        function toggleMobileMenu() {
+                const sidebar = document.getElementById('sidebar');
+                sidebar.classList.toggle('-translate-x-full');
+            }
+        // State Array containing categories natively grouped
+        let products = [];
+
+        let currentCategory = "All";
+        let cart = [];
+
+        // Generate categorical system filter controls dynamically
+        function renderCategoryMenu() {
+            const categories = ["All", ...new Set(products.map(p => p.category))];
+            const container = document.getElementById('category-menu');
+
+            container.innerHTML = categories.map(cat => {
+                const isActive = currentCategory === cat;
+                return `
+                    <button onclick="filterCategory('${cat}')" class="px-4 py-2 rounded-xl text-xs font-bold transition-all ${isActive ? 'bg-emerald-600 text-white shadow-lg' : 'bg-stone-800 text-stone-300 hover:bg-stone-700 border border-stone-700'}">
+                        ${cat}
+                    </button>
+                `;
+            }).join('');
+        }
+
+
+        
+        //vendor role anlaytics
+        window.addEventListener('DOMContentLoaded', () => {
+                fetch('/api/current-user')
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data) {
+                            // 1. Hide admin elements for non-admins (existing logic)
+                            if (data.role !== 'admin') {
+                                document.querySelectorAll('[data-admin-only]').forEach(el => {
+                                    el.style.display = 'none';
+                                });
+                            }
+
+                            // 2. SHOW the vendor sales link ONLY if the user is a vendor
+                            if (data.role === 'vendor') {
+                                const vendorNavLink = document.getElementById('vendorSalesNavLink');
+                                if (vendorNavLink) {
+                                    vendorNavLink.classList.remove('hidden'); // Makes the button visible
+                                }
+                            }
+                        }
+                    })
+                    .catch(err => console.error('Failed to load user session info:', err));
+            });
+
+        function filterCategory(categoryName) {
+            currentCategory = categoryName;
+            renderCategoryMenu();
+            initCatalog();
+        }
+
+        // Render sorted selections matching filter bounds
+        function initCatalog() {
+            const grid = document.getElementById('catalog-grid');
+            const filtered = currentCategory === "All" ? products : products.filter(p => p.category === currentCategory);
+
+            if (filtered.length === 0) {
+                grid.innerHTML = `<div class="col-span-full text-stone-500 text-xs py-8 font-medium">No inventory elements assigned here.</div>`;
+                return;
+            }
+
+            grid.innerHTML = filtered.map(p => `
+                <div onclick="addToCart(${p.id})" class="bg-stone-800/40 border border-stone-800 hover:border-emerald-800/60 p-5 rounded-2xl transition-all cursor-pointer group hover:bg-stone-800/80">
+                    <div class="text-2xl mb-2 group-hover:scale-110 transition-transform duration-200 inline-block">📄</div>
+                    <h4 class="font-bold text-sm text-stone-200 group-hover:text-white truncate">${p.name}</h4>
+                    <span class="inline-block mt-1 text-[9px] uppercase font-bold text-stone-500 tracking-wider bg-stone-900 border border-stone-800 px-1.5 py-0.5 rounded-md">${p.category}</span>
+                    <p class="text-emerald-400 font-extrabold text-base mt-2">ksh${parseFloat(p.price).toFixed(2)}</p>
+                </div>
+            `).join('');
+        }
+
+        function printReceipt() {
+                if (cart.length === 0) {
+                    alert("Cart is empty. Nothing to print!");
+                    return;
+                }
+
+                // Open a new window for the receipt
+                const printWindow = window.open('', '_blank', 'width=400,height=600');
+
+                const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+                const tax = total * 0.00;
+                const grandTotal = total + tax;
+
+                printWindow.document.write(`
+        <html>
+            <head>
+                <style>
+    /* 1. Printer Settings (For Thermal Paper) */
+    @page { 
+        size: 80mm; 
+        margin: 0; 
+    }
+
+    /* 2. Body (Controls the receipt width and font) */
+    body { 
+        font-family: 'Courier New', Courier, monospace; 
+        color: #000;
+        width: 72mm; 
+        margin: 0 auto; 
+        padding: 5px; 
+    }
+
+    /* 3. Layout Styles (Existing) */
+    .header { text-align: center; margin-bottom: 20px; }
+    table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+    th, td { border-bottom: 1px dashed #000; padding: 5px; text-align: left; }
+    .total-section { text-align: right; font-weight: bold; }
+    .footer {
+        text-align: center;
+        margin-top: 20px;
+        font-size: 0.9em;
+        border-top: 1px dashed #000;
+        padding-top: 10px;
+    }
+
+</style>
+                
+            </head>
+            <body>
+                <div class="header">
+                    <h3> MAX ART AND GALLERY PRINT SHOP</h3>
+                    <p>${new Date().toLocaleString()}</p>
+                </div>
+                <table>
+                    <thead><tr><th>Item</th><th>Qty</th><th>Price</th></tr></thead>
+                    <tbody>
+                        ${cart.map(item => `
+                            <tr>
+                                <td>${item.name}</td>
+                                <td>${item.quantity}</td>
+                                <td>ksh${(item.price * item.quantity).toFixed(2)}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+                <div class="total-section">
+                    <p>Tax (0%): ksh${tax.toFixed(2)}</p>
+                    <p style="font-size: 1.2em;">TOTAL: ksh${grandTotal.toFixed(2)}</p>
+                </div>
+                <div class="footer">
+        <p>Thank you for doing business with us!</p>
+        <p>Please come again!</p>
+        <p>📞 Contact: 254 456-7890</p>
+    </div>
+            </body>
+        </html>
+    `);
+
+                printWindow.document.close();
+                printWindow.focus();
+                printWindow.print();
+                printWindow.close(); // Uncomment to close tab after printing
+            }
+        // Operational management method to accept custom inventory additions
+        function handleAddNewItem(event) {
+                event.preventDefault();
+                const name = document.getElementById('form-name').value.trim();
+                const category = document.getElementById('form-category').value.trim();
+                const price = parseFloat(document.getElementById('form-price').value);
+
+                fetch('/api/products', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, category, price })
+                })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Re-fetch all products to keep local state synced with DB
+                            fetch('/api/products')
+                                .then(res => res.json())
+                                .then(newData => {
+                                    products = newData;
+                                    renderCategoryMenu();
+                                    initCatalog();
+                                    document.getElementById('new-item-form').reset();
+                                });
+                        }
+                    });
+            }
+        function addToCart(productId) {
+                const product = products.find(p => p.id === productId);
+                const existing = cart.find(item => item.id === productId);
+
+                // Safety: Check if we have stock to begin with
+                if (product.stock <= 0) {
+                    alert("This item is out of stock!");
+                    return;
+                }
+
+                // Check if adding another one exceeds stock
+                const currentQty = existing ? existing.quantity : 0;
+                if (currentQty >= product.stock) {
+                    alert("Not enough stock available!");
+                    return;
+                }
+
+                if (existing) {
+                    existing.quantity += 1;
+                } else {
+                    cart.push({ ...product, quantity: 1 });
+                }
+                renderCart();
+            }
+       function updateQty(id, delta) {
+            const item = cart.find(i => i.id === id);
+            const product = products.find(p => p.id === id); // Get product data to check stock
+
+            if (!item) return;
+
+            // If increasing (delta > 0), check against stock
+            if (delta > 0 && item.quantity >= product.stock) {
+                alert("Maximum stock reached!");
+                return;
+            }
+
+            item.quantity += delta;
+
+            if (item.quantity <= 0) {
+                cart = cart.filter(i => i.id !== id);
+            }
+            renderCart();
+        }
+
+        function renderCart() {
+                const container = document.getElementById('cart-container');
+                const countEl = document.getElementById('cart-count');
+                let total = 0, totalItems = 0;
+
+                if (cart.length === 0) {
+                    container.innerHTML = `<div class="text-center py-12 text-stone-500 text-xs font-medium">Ledger is currently empty.</div>`;
+                    countEl.innerText = "0 Items";
+                    document.getElementById('summary-tax').innerText = "ksh0.00";
+                    document.getElementById('summary-total').innerText = "ksh0.00";
+                    return;
+                }
+
+                container.innerHTML = cart.map(item => {
+                    // Force price to float so math works correctly
+                    const price = parseFloat(item.price);
+                    const cost = price * item.quantity;
+
+                    total += cost;
+                    totalItems += item.quantity;
+
+                    return `
+            <div class="bg-stone-900 border border-stone-800 p-3.5 rounded-xl flex items-center justify-between text-xs">
+                <div class="min-w-0 flex-1 pr-3">
+                    <h5 class="font-bold text-stone-200 truncate">${item.name}</h5>
+                    <!-- FIX: Wrap item.price in parseFloat -->
+                    <p class="text-stone-500 font-medium mt-0.5">ksh${price.toFixed(2)} each</p>
+                </div>
+                <div class="flex items-center space-x-2.5">
+                    <div class="flex items-center bg-stone-950 border border-stone-800 rounded-lg p-1">
+                        <button onclick="updateQty(${item.id}, -1)" class="w-5 h-5 flex items-center justify-center font-bold text-stone-400 hover:text-white">-</button>
+                        <span class="px-2 font-bold text-stone-200">${item.quantity}</span>
+                        <button onclick="updateQty(${item.id}, 1)" class="w-5 h-5 flex items-center justify-center font-bold text-stone-400 hover:text-white">+</button>
+                    </div>
+                    <span class="font-black text-stone-300 w-14 text-right">ksh${cost.toFixed(2)}</span>
+                </div>
+            </div>
+        `;
+                }).join('');
+
+                const tax = total * 0.00;
+                const grandTotal = total + tax;
+
+                countEl.innerText = `${totalItems} Item${totalItems > 1 ? 's' : ''}`;
+                document.getElementById('summary-tax').innerText = `ksh${tax.toFixed(2)}`;
+                document.getElementById('summary-total').innerText = `ksh${grandTotal.toFixed(2)}`;
+            }
+        
+            
+            
+        function processCheckout(event) {
+                const btn = event.currentTarget;
+                const originalText = btn.innerText;
+                const originalClasses = btn.className;
+
+                // 1. Handle Empty Ledger (Red UI Feedback)
+                if (cart.length === 0) {
+                    btn.innerText = "Ledger Empty!";
+                    btn.classList.add("bg-red-600"); // Adds the red color
+                    btn.classList.remove("bg-green-600");
+
+                    setTimeout(() => {
+                        btn.innerText = originalText;
+                        btn.className = originalClasses;
+                    }, 2000);
+                    return;
+                }
+
+                // 2. Validate Loan Details & Deposit if Loan is Enabled
+                const loanCheckbox = document.getElementById('loan-checkbox');
+                const isLoan = loanCheckbox ? loanCheckbox.checked : false;
+                const customerName = document.getElementById('customer-name') ? document.getElementById('customer-name').value.trim() : '';
+                const customerPhone = document.getElementById('customer-phone') ? document.getElementById('customer-phone').value.trim() : '';
+                const depositAmount = document.getElementById('loan-deposit') ? parseFloat(document.getElementById('loan-deposit').value) || 0 : 0;
+
+                // Calculate total cart value and explicit loan balance
+                const totalCartValue = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+                const loanBalance = Math.max(0, totalCartValue - depositAmount);
+
+                if (isLoan) {
+                    if (!customerName || !customerPhone) {
+                        btn.innerText = "Missing Loan Info!";
+                        btn.className = "bg-red-600 text-white px-6 py-2 rounded-lg font-bold shadow-lg transition-all";
+                        setTimeout(() => {
+                            btn.innerText = originalText;
+                            btn.className = originalClasses;
+                        }, 2000);
+                        return;
+                    }
+
+                    if (customerPhone.length !== 10) {
+                        btn.innerText = "Phone Must Be 10 Digits!";
+                        btn.className = "bg-red-600 text-white px-6 py-2 rounded-lg font-bold shadow-lg transition-all";
+                        setTimeout(() => {
+                            btn.innerText = originalText;
+                            btn.className = originalClasses;
+                        }, 2000);
+                        return;
+                    }
+                    if (depositAmount > totalCartValue) {
+                        btn.innerText = "Deposit > Total!";
+                        btn.className = "bg-red-600 text-white px-6 py-2 rounded-lg font-bold shadow-lg transition-all";
+                        setTimeout(() => {
+                            btn.innerText = originalText;
+                            btn.className = originalClasses;
+                        }, 2000);
+                        return;
+                    }
+                }
+
+                // 3. Map the data with explicit total and loan balance included
+                const payload = {
+                    items: cart.map(item => ({
+                        id: item.id,
+                        quantity: item.quantity,
+                        name: item.name || "Unknown Product",
+                        price: item.price
+                    })),
+                    isLoan,
+                    customerName,
+                    customerPhone,
+                    depositAmount,
+                    totalAmount: totalCartValue,
+                    loanBalance: isLoan ? loanBalance : 0
+                };
+
+                // 4. Process Checkout
+                fetch('/api/checkout', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.success) {
+                            // SUCCESS UI (Blue UI Feedback)
+                            btn.innerText = "Order Complete!";
+                            btn.classList.add("bg-blue-600"); // Adds the blue color
+                            btn.classList.remove("bg-green-600");
+                            cart = [];
+                            renderCart();
+
+                            // Reset loan form elements and balance display on success
+                            if (loanCheckbox) loanCheckbox.checked = false;
+                            const fieldsContainer = document.getElementById('loan-fields');
+                            if (fieldsContainer) fieldsContainer.classList.add('hidden');
+                            const remainingContainer = document.getElementById('remaining-balance-container');
+                            if (remainingContainer) remainingContainer.classList.add('hidden');
+
+                            if (document.getElementById('customer-name')) document.getElementById('customer-name').value = '';
+                            if (document.getElementById('customer-phone')) document.getElementById('customer-phone').value = '';
+                            if (document.getElementById('loan-deposit')) document.getElementById('loan-deposit').value = '';
+
+                            // Reset button after 2 seconds
+                            setTimeout(() => {
+                                btn.innerText = originalText;
+                                btn.className = originalClasses;
+                            }, 2000);
+                        } else {
+                            // FAILURE UI (Red UI Feedback)
+                            btn.innerText = "Error!";
+                            btn.className = "bg-red-600 text-white px-6 py-2 rounded-lg font-bold shadow-lg transition-all";
+
+                            setTimeout(() => {
+                                btn.innerText = originalText;
+                                btn.className = originalClasses;
+                            }, 2000);
+                            console.error("Checkout failed:", data.message);
+                        }
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        btn.innerText = "System Error";
+                        btn.className = "bg-red-600 text-white px-6 py-2 rounded-lg font-bold shadow-lg transition-all";
+                        setTimeout(() => {
+                            btn.innerText = originalText;
+                            btn.className = originalClasses;
+                        }, 2000);
+                    });
+            }
+        
+        setInterval(() => {
+            const el = document.getElementById('live-clock');
+            if (el) el.innerText = new Date().toLocaleTimeString();
+        }, 1000);
+
+        window.addEventListener('DOMContentLoaded', () => {
+                fetch('/api/products')
+                    .then(res => res.json())
+                    .then(data => {
+                        products = data;
+                        console.log("DEBUG - Loaded Products:", products);
+                        renderCategoryMenu();
+                        initCatalog();
+                    });
+            });
+
+        // Logout Logic
+           // Logout Logic (Safe Check)
+            const logoutBtn = document.getElementById('logoutBtn');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', async () => {
+                    try {
+                        const response = await fetch('/api/logout', { method: 'POST' });
+                        const result = await response.json();
+
+                        if (result.success) {
+                            window.location.href = '/login';
+                        } else {
+                            alert('Logout failed!');
+                        }
+                    } catch (err) {
+                        console.error('Logout error:', err);
+                        alert('Something went wrong during logout.');
+                    }
+                });
+            }
+        window.addEventListener('DOMContentLoaded', () => {
+                const currentPath = window.location.pathname;
+                const navLinks = document.querySelectorAll('aside nav a');
+
+                navLinks.forEach(link => {
+                    const href = link.getAttribute('href');
+                    const isActive = href === '/'
+                        ? currentPath === '/' || currentPath === ''
+                        : currentPath.endsWith(href);
+
+                    if (isActive) {
+                        link.className = "flex items-center space-x-3 px-4 py-3 rounded-xl font-bold text-sm transition-all bg-emerald-900 text-white shadow-sm ring-1 ring-white/5";
+                    } else {
+                        link.className = "flex items-center space-x-3 px-4 py-3 rounded-xl font-bold text-sm transition-all text-emerald-400/80 hover:bg-emerald-900/50 hover:text-emerald-200";
+                    }
+                });
+            });
+
+        window.addEventListener('DOMContentLoaded', () => {
+                fetch('/api/current-user')
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data) {
+                            // 1. If the user is NOT an admin, hide admin-only elements (Analytics, Catalog, Reports, Cashiers)
+                            if (data.role !== 'admin') {
+                                document.querySelectorAll('[data-admin-only]').forEach(el => {
+                                    el.style.display = 'none';
+                                });
+                            }
+
+                            // 2. If the user IS a vendor, hide vendor-excluded elements (like the Archive page link)
+                            if (data.role === 'vendor') {
+                                document.querySelectorAll('[data-vendor-exclude]').forEach(el => {
+                                    el.style.display = 'none';
+                                });
+                            }
+                        }
+                    })
+                    .catch(err => console.error('Failed to load user session info:', err));
+            });
+
+        window.addEventListener('DOMContentLoaded', () => {
+                fetch('/api/current-user')
+                    .then(response => response.json())
+                    .then(data => {
+                        const role = data.role || (data.user && data.user.role);
+
+                        // If the user is NOT a vendor, hide vendor-only sidebar links
+                        if (role !== 'vendor') {
+                            document.querySelectorAll('[data-vendor-only]').forEach(el => {
+                                el.style.display = 'none';
+                            });
+                        }
+                         // Show loan section ONLY for admin or cashier
+                        if (role === 'admin' || role === 'cashier') {
+                            const loanSection = document.getElementById('loan-section');
+                            if (loanSection) {
+                                loanSection.classList.remove('hidden');
+                            }
+                        }
+                    })
+                    .catch(err => console.error('Failed to load user session info:', err));
+            });
+
+
+        function updateRemainingBalance() {
+                const depositInput = document.getElementById('loan-deposit');
+                const remainingContainer = document.getElementById('remaining-balance-container');
+                const remainingDisplay = document.getElementById('remaining-balance-display');
+
+                const deposit = parseFloat(depositInput.value) || 0;
+                const totalCartValue = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+
+                // Calculate remaining balance (ensure it doesn't drop below 0)
+                const remaining = Math.max(0, totalCartValue - deposit);
+
+                if (remainingDisplay) {
+                    remainingDisplay.innerText = remaining.toFixed(2);
+                }
+
+                // Show the balance row if a deposit is being typed, hide if empty
+                if (remainingContainer) {
+                    if (depositInput.value.trim() !== '') {
+                        remainingContainer.classList.remove('hidden');
+                    } else {
+                        remainingContainer.classList.add('hidden');
+                    }
+                }
+            }
+
+       
+
+        function toggleLoanFields() {
+                const loanCheckbox = document.getElementById('loan-checkbox');
+                const isChecked = loanCheckbox ? loanCheckbox.checked : false;
+                const fieldsContainer = document.getElementById('loan-fields');
+                const remainingContainer = document.getElementById('remaining-balance-container');
+                const checkoutBtn = document.getElementById('checkout-btn');
+
+                if (isChecked) {
+                    if (fieldsContainer) fieldsContainer.classList.remove('hidden');
+
+                    // Transform button to Loan mode
+                    if (checkoutBtn) {
+                        checkoutBtn.innerText = "Process Loan Order";
+                        checkoutBtn.classList.remove('bg-green-600', 'hover:bg-green-500');
+                        checkoutBtn.classList.add('bg-emerald-600', 'hover:bg-emerald-500');
+                    }
+                } else {
+                    if (fieldsContainer) fieldsContainer.classList.add('hidden');
+
+                    const customerName = document.getElementById('customer-name');
+                    const customerPhone = document.getElementById('customer-phone');
+                    const loanDeposit = document.getElementById('loan-deposit');
+
+                    if (customerName) customerName.value = '';
+                    if (customerPhone) customerPhone.value = '';
+                    if (loanDeposit) loanDeposit.value = '';
+                    if (remainingContainer) remainingContainer.classList.add('hidden');
+
+                    // Revert button back to Standard mode
+                    if (checkoutBtn) {
+                        checkoutBtn.innerText = "Complete Checkout";
+                        checkoutBtn.classList.remove('bg-emerald-600', 'hover:bg-emerald-500');
+                        checkoutBtn.classList.add('bg-green-600', 'hover:bg-green-500');
+                    }
+                }
+            }
+        // Safely bind the listener programmatically if using modules
+        document.addEventListener('DOMContentLoaded', () => {
+                const loanDepositInput = document.getElementById('loan-deposit');
+                if (loanDepositInput) {
+                    loanDepositInput.addEventListener('input', updateRemainingBalance);
+                }
+            });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PrintStudio Pro - Catalog</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-stone-900 text-stone-100 font-sans min-h-dvh flex flex-col md:flex-row antialiased">
+
+    <!-- Mobile Header Bar (Only visible on phones) -->
+    <header
+        class="md:hidden flex items-center justify-between bg-emerald-950 text-emerald-300 p-4 border-b border-emerald-900 sticky top-0 z-30">
+        <div class="flex items-center space-x-3">
+            <div class="bg-emerald-600 p-2 rounded-xl text-lg font-black text-white shadow-lg">🖨️</div>
+            <h1 class="text-sm font-black text-white tracking-wider uppercase">PrintStudio</h1>
+        </div>
+        <button onclick="toggleMobileMenu()" class="bg-emerald-900/50 p-2 rounded-xl text-white focus:outline-none">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+            </svg>
+        </button>
+    </header>
+
+    <!-- GREEN SIDEBAR NAVIGATION -->
+    <!-- GREEN SIDEBAR NAVIGATION PANEL -->
+    <!-- GREEN SIDEBAR NAVIGATION PANEL (Sticky Desktop + Mobile Drawer) -->
+    <aside id="sidebar"
+        class="fixed inset-y-0 left-0 z-40 w-64 bg-emerald-950 h-screen text-emerald-300 p-4 flex flex-col justify-between border-r border-emerald-900 shadow-2xl transform -translate-x-full md:translate-x-0 md:sticky md:top-0 transition-transform duration-300 shrink-0">
+    
+        <!-- Top Section: Logo & Nav Wrapper -->
+        <div class="flex flex-col space-y-4 flex-1 overflow-hidden">
+            <!-- Logo Header -->
+            <div class="flex items-center justify-between shrink-0 px-2">
+                <div class="flex items-center space-x-3">
+                    <div class="bg-emerald-600 p-2 rounded-xl text-lg font-black text-white shadow-lg">🖨️</div>
+                    <div>
+                        <h1 class="text-sm font-black text-white tracking-wider uppercase">PrintStudio</h1>
+                        <p class="text-[10px] text-emerald-400 font-bold tracking-widest">PRO SYSTEM</p>
+                    </div>
+                </div>
+                <!-- Close button for mobile drawer -->
+                <button onclick="toggleMobileMenu()"
+                    class="md:hidden text-emerald-400 hover:text-white p-1 text-lg font-bold">
+                    ✕
+                </button>
+            </div>
+    
+            <!-- Scrollable Navigation Area -->
+            <nav class="flex flex-col space-y-1 overflow-y-auto flex-1 pr-1" id="sidebar-nav">
+                <a href="/"
+                    class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl font-bold text-sm transition-all text-emerald-400/80 hover:bg-emerald-900/50 hover:text-emerald-200">
+                    <span>🖥️</span><span>Terminal</span>
+                </a>
+                <a href="/history" data-vendor-exclude
+                    class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl font-bold text-sm transition-all text-emerald-400/80 hover:bg-emerald-900/50 hover:text-emerald-200">
+                    <span>📊</span><span>Archive</span>
+                </a>
+                <a href="/analytics" data-admin-only
+                    class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl font-bold text-sm transition-all text-emerald-400/80 hover:bg-emerald-900/50 hover:text-emerald-200">
+                    <span>📈</span><span>Analytics</span>
+                </a>
+                <a href="/inventory" data-admin-only
+                    class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl font-bold text-sm transition-all text-emerald-400/80 hover:bg-emerald-900/50 hover:text-emerald-200">
+                    <span>📦</span><span>Catalog</span>
+                </a>
+                <a href="/reports" data-admin-only
+                    class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl font-bold text-sm transition-all text-emerald-400/80 hover:bg-emerald-900/50 hover:text-emerald-200">
+                    <span>📄</span><span>reports</span>
+                </a>
+                <a href="/cashiers" data-admin-only
+                    class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl font-bold text-sm transition-all text-emerald-400/80 hover:bg-emerald-900/50 hover:text-emerald-200">
+                    <span>👥</span><span>Cashiers</span>
+                </a>
+                
+                <a href="/loans" data-admin-only
+                    class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl font-bold text-sm transition-all text-emerald-400/80 hover:bg-emerald-900/50 hover:text-emerald-200">
+                    <span>💳</span><span>Loans Ledger</span>
+                </a>
+                <a href="/messages" data-admin-only
+                    class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl font-bold text-sm transition-all text-emerald-400/80 hover:bg-emerald-900/50 hover:text-emerald-200">
+                    <span>💬</span><span>Messages</span>
+                </a>
+                <a href="/account"
+                    class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl font-bold text-sm transition-all text-emerald-400/80 hover:bg-emerald-900/50 hover:text-emerald-200">
+                    <span>⚙️</span><span>Settings</span>
+                </a>
+            </nav>
+        </div>
+    
+        <!-- Bottom Section: Logout & Operator Info -->
+        <div class="space-y-3 shrink-0 pt-3 border-t border-emerald-900">
+            <div>
+                <button id="logoutBtn"
+                    class="flex items-center space-x-3 px-3.5 py-2.5 w-full text-red-400 hover:bg-red-900/20 rounded-xl font-bold text-sm transition-all">
+                    <span>🚪</span><span>Logout</span>
+                </button>
+            </div>
+            <div class="flex items-center space-x-3 px-2">
+                <div
+                    class="w-8 h-8 rounded-full bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-xs font-black text-emerald-400">
+                    OP</div>
+                <div>
+                    <p id="operatorName" class="text-xs font-bold text-white leading-tight">main counter</p>
+                    <span id="live-clock" class="text-[10px] font-mono font-medium text-emerald-600">00:00:00 AM</span>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- CORE INTERFACE AREA -->
+    <main class="flex-1 p-4 md:p-8 overflow-y-auto">
+        <div class="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div>
+                <h2 class="text-2xl font-black text-white tracking-tight">Catalog Management</h2>
+                <input type="text" id="searchInput" onkeyup="filterInventory()" placeholder="Search items..."
+                    class="bg-stone-950 border border-stone-800 px-4 py-2 mt-2 rounded-xl text-sm focus:border-emerald-600 outline-none w-full sm:w-64">
+            </div>
+        </div>
+    
+        <!-- Update your input form to include Category and Stock (matches md:grid-cols-5) -->
+        <div
+            class="bg-stone-900 p-4 md:p-6 rounded-2xl border border-stone-800 mb-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4">
+            <input id="new-name" placeholder="Item Name"
+                class="bg-stone-950 border border-stone-800 rounded-xl p-3 text-sm text-white outline-none focus:border-emerald-600">
+            <input id="new-category" placeholder="Category"
+                class="bg-stone-950 border border-stone-800 rounded-xl p-3 text-sm text-white outline-none focus:border-emerald-600">
+            <input id="new-price" type="number" placeholder="Price (ksh)"
+                class="bg-stone-950 border border-stone-800 rounded-xl p-3 text-sm text-white outline-none focus:border-emerald-600">
+            
+            <button id="add-btn" onclick="addProduct()"
+                class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl transition-colors">Add
+                Product</button>
+        </div>
+    
+        <!-- Mobile-Responsive Table Container Wrapper -->
+        <div class="bg-stone-950 rounded-2xl border border-stone-800 shadow-xl overflow-hidden">
+            <div class="overflow-x-auto [-webkit-overflow-scrolling:touch]">
+                <table class="w-full text-left text-xs min-w-[650px]" id="inventoryTable">
+                    <thead>
+                        <tr class="bg-stone-900/50 border-b border-stone-800 text-stone-400 font-bold uppercase text-[10px]">
+                            <th class="p-4 pl-6">Item Name</th>
+                            <th class="p-4">Price</th>
+                            <th class="p-4">Stock Level</th>
+                            <th class="p-4">Adjust</th>
+                            <th class="p-4 text-center">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="inventory-list" class="divide-y divide-stone-800/50 text-stone-300">
+                        <!-- Loaded via JS -->
+                        <tr>
+                            <td colspan="5" class="p-12 text-center text-stone-500 font-medium">Querying inventory
+                                database...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <script>
+
+        function toggleMobileMenu() {
+                const sidebar = document.getElementById('sidebar');
+                sidebar.classList.toggle('-translate-x-full');
+            }
+
+         
+        async function loadInventory() {
+                const res = await fetch('/api/products');
+                const data = await res.json();
+                const tbody = document.getElementById('inventory-list');
+
+                // 1. Group by category
+                const grouped = data.reduce((acc, item) => {
+                    const cat = item.category || 'Uncategorized';
+                    if (!acc[cat]) acc[cat] = [];
+                    acc[cat].push(item);
+                    return acc;
+                }, {});
+
+                // 2. Build the HTML dynamically with category and item delete buttons
+                tbody.innerHTML = Object.entries(grouped).map(([category, items]) => `
+                <!-- Category Header -->
+                <tr class="bg-stone-800">
+                    <td colspan="5" class="p-3">
+                        <div class="flex justify-between items-center px-3">
+                            <span class="text-emerald-400 font-bold uppercase tracking-wider text-sm">${category}</span>
+                            ${category !== 'Uncategorized' ? `
+                                <button onclick="deleteCategory('${category}')" 
+                                        class="bg-rose-950/50 hover:bg-rose-900 text-rose-400 hover:text-white border border-rose-900/50 px-2.5 py-1 rounded-lg text-xs font-bold transition-all">
+                                    🗑️ Category
+                                </button>
+                            ` : ''}
+                        </div>
+                    </td>
+                </tr>
+                <!-- Product Items -->
+                ${items.map(p => `
+                    <tr class="hover:bg-stone-900/30 border-b border-stone-800/50">
+                        <td class="p-4 pl-6 text-white font-medium">${p.name}</td>
+                        <td class="p-4 text-stone-400">ksh${parseFloat(p.price).toFixed(2)}</td>
+                        <td class="p-4 font-black ${p.stock < 5 ? 'text-rose-500' : 'text-emerald-400'} text-lg">
+                            ${p.stock}
+                        </td>
+                        <td class="p-4">
+                            <div class="flex items-center gap-2">
+                                <input type="number" id="qty-${p.id}" value="1" min="1" 
+                                       class="w-16 bg-stone-950 border border-stone-800 rounded-lg p-1.5 text-center text-sm focus:border-emerald-600 outline-none">
+                                <button onclick="updateStock(${p.id}, '${p.name}', 1)" class="bg-stone-800 hover:bg-emerald-900 px-2.5 py-1.5 rounded-lg text-sm font-bold">+</button>
+                                <button onclick="updateStock(${p.id}, '${p.name}', -1)" class="bg-stone-800 hover:bg-rose-900 px-2.5 py-1.5 rounded-lg text-sm font-bold">-</button>
+                            </div>
+                        </td>
+                        <td class="p-4 text-center">
+                            <button onclick="deleteProduct(${p.id}, '${p.name}')" 
+                                    class="bg-rose-950/50 hover:bg-rose-900 text-rose-400 hover:text-white border border-rose-900/50 px-3 py-1.5 rounded-lg text-xs font-bold transition-all">
+                                🗑️ Remove
+                            </button>
+                        </td>
+                    </tr>
+                `).join('')}
+            `).join('');
+            }
+
+        async function deleteProduct(id, name) {
+                const isConfirmed = confirm(`Are you sure you want to completely remove "${name}" from the catalog?`);
+                if (!isConfirmed) return;
+
+                try {
+                    const response = await fetch(`/api/products/${id}`, {
+                        method: 'DELETE',
+                        headers: { 'Content-Type': 'application/json' }
+                    });
+
+                    const result = await response.json();
+                    if (response.ok) {
+                        loadInventory();
+                    } else {
+                        alert(result.message || 'Failed to delete product.');
+                    }
+                } catch (err) {
+                    console.error('Delete error:', err);
+                    alert('Something went wrong while deleting the product.');
+                }
+            }
+
+            async function deleteCategory(categoryName) {
+                const isConfirmed = confirm(`Are you sure you want to delete the category "${categoryName}"? All items inside will be moved to Uncategorized.`);
+                if (!isConfirmed) return;
+
+                try {
+                    const response = await fetch(`/api/categories/${encodeURIComponent(categoryName)}`, {
+                        method: 'DELETE',
+                        headers: { 'Content-Type': 'application/json' }
+                    });
+
+                    const result = await response.json();
+                    if (response.ok) {
+                        loadInventory();
+                    } else {
+                        alert(result.message || 'Failed to delete category.');
+                    }
+                } catch (err) {
+                    console.error('Category delete error:', err);
+                    alert('Something went wrong while deleting the category.');
+                }
+            }
+        async function updateStock(id, name, direction) {
+                // 1. Get the quantity from the input box
+                const qtyInput = document.getElementById(`qty-${id}`);
+                const qty = parseInt(qtyInput.value) || 0; // Default to 0 if empty
+
+                if (qty <= 0) {
+                    alert("Please enter a valid quantity.");
+                    return;
+                }
+
+                // 2. Calculate the change (direction is 1 for add, -1 for remove)
+                const change = qty * direction;
+                const action = change > 0 ? "ADD" : "REMOVE";
+
+                // 3. Trigger Confirmation
+                const isConfirmed = confirm(`Are you sure you want to ${action} ${Math.abs(change)} units to/from "${name}"?`);
+
+                if (!isConfirmed) return;
+
+                // 4. Send to server
+                await fetch('/api/products/update', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id, change })
+                });
+
+                // 5. Reset input to 1 and Refresh
+                qtyInput.value = 1;
+                loadInventory();
+            }
+        async function addProduct() {
+                const btn = document.getElementById('add-btn');
+
+                // 1. Gather the data
+                const data = {
+                    name: document.getElementById('new-name').value,
+                    category: document.getElementById('new-category').value,
+                    price: document.getElementById('new-price').value,
+                    stock: 0
+                };
+
+                // Validation (optional check to ensure fields aren't empty)
+                if (!data.name || !data.price) return;
+
+                // 2. Send to server
+                await fetch('/api/products', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                // 3. SUCCESS FEEDBACK
+                const originalText = btn.innerText;
+                btn.innerText = "Added!";
+                btn.classList.add("bg-emerald-900"); // Darken button to show it's done
+                btn.classList.remove("bg-emerald-600");
+
+                // 4. Clear fields
+                document.getElementById('new-name').value = '';
+                document.getElementById('new-category').value = '';
+                document.getElementById('new-price').value = '';
+
+                // 5. Refresh table
+                loadInventory();
+
+                // 6. Reset button after 2 seconds
+                setTimeout(() => {
+                    btn.innerText = originalText;
+                    btn.classList.remove("bg-emerald-900");
+                    btn.classList.add("bg-emerald-600");
+                }, 2000);
+            
+            }
+        function filterInventory() {
+            let filter = document.getElementById("searchInput").value.toUpperCase();
+            let rows = document.getElementById("inventoryTable").getElementsByTagName("tr");
+            for (let i = 1; i < rows.length; i++) {
+                let name = rows[i].getElementsByTagName("td")[0].innerText.toUpperCase();
+                rows[i].style.display = name.indexOf(filter) > -1 ? "" : "none";
+            }
+        }
+
+
+       // This polls for new data every 5 seconds
+        setInterval(() => {
+            // Check if the user is currently typing in ANY input field
+            const isTyping = document.activeElement.tagName === 'INPUT';
+
+            // Only refresh if the user is NOT typing in any input field
+            if (!isTyping) {
+                loadInventory();
+            }
+        }, 1000);
+         setInterval(() => {
+                const el = document.getElementById('live-clock');
+                if (el) el.innerText = new Date().toLocaleTimeString();
+            }, 1000);
+
+        document.getElementById('logoutBtn').addEventListener('click', async () => {
+                try {
+                    const response = await fetch('/api/logout', { method: 'POST' });
+                    const result = await response.json();
+
+                    if (result.success) {
+                        // Force redirect to login page
+                        window.location.href = '/login';
+                    } else {
+                        alert('Logout failed!');
+                    }
+                } catch (err) {
+                    console.error('Logout error:', err);
+                    alert('Something went wrong during logout.');
+                }
+            });
+
+        window.addEventListener('DOMContentLoaded', () => {
+                const currentPath = window.location.pathname;
+                const navLinks = document.querySelectorAll('aside nav a');
+
+                navLinks.forEach(link => {
+                    const href = link.getAttribute('href');
+                    const isActive = href === '/'
+                        ? currentPath === '/' || currentPath === ''
+                        : currentPath.endsWith(href);
+
+                    if (isActive) {
+                        link.className = "flex items-center space-x-3 px-4 py-3 rounded-xl font-bold text-sm transition-all bg-emerald-900 text-white shadow-sm ring-1 ring-white/5";
+                    } else {
+                        link.className = "flex items-center space-x-3 px-4 py-3 rounded-xl font-bold text-sm transition-all text-emerald-400/80 hover:bg-emerald-900/50 hover:text-emerald-200";
+                    }
+                });
+            });
+        
+        window.addEventListener('DOMContentLoaded', () => {
+                fetch('/api/current-user')
+                    .then(response => response.json())
+                    .then(data => {
+                        // If the user is NOT an admin (i.e., they are a cashier or vendor), hide admin elements
+                        if (data && data.role !== 'admin') {
+                            const adminElements = document.querySelectorAll('[data-admin-only]');
+                            adminElements.forEach(el => {
+                                el.style.display = 'none';
+                            });
+                        }
+                    })
+                    .catch(err => console.error('Failed to load user session info:', err));
+            });
+
+
+
+    </script>
+</body>
+
+</html>

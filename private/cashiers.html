@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Cashiers - PrintStudio Pro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-stone-900 text-stone-100 font-sans min-h-screen flex flex-col md:flex-row">
+
+    <!-- Mobile Header Bar (Visible only on mobile screens) -->
+    <header class="md:hidden bg-emerald-950 border-b border-emerald-900 p-4 flex items-center justify-between shrink-0">
+        <div class="flex items-center space-x-3">
+            <div class="bg-emerald-600 p-2 rounded-xl text-base font-black text-white shadow-lg">🖨️</div>
+            <h1 class="text-sm font-black text-white tracking-wider uppercase">PrintStudio</h1>
+        </div>
+        <button id="menuBtn"
+            class="bg-emerald-900/60 hover:bg-emerald-900 text-emerald-300 p-2.5 rounded-xl border border-emerald-800 transition-all focus:outline-none">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16">
+                </path>
+            </svg>
+        </button>
+    </header>
+
+    <!-- Sidebar Overlay for Mobile -->
+    <div id="sidebarOverlay" class="fixed inset-0 bg-black/60 z-40 hidden md:hidden"></div>
+
+    <!-- Sidebar / Navigation Drawer -->
+    <aside id="sidebar"
+        class="fixed inset-y-0 left-0 z-50 w-64 bg-emerald-950 text-emerald-300 p-6 flex flex-col justify-between border-r border-emerald-900 shrink-0 transform -translate-x-full md:translate-x-0 md:static transition-transform duration-300 ease-in-out">
+        <div class="flex flex-col space-y-8">
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center space-x-3">
+                    <div class="bg-emerald-600 p-2 rounded-xl text-lg font-black text-white shadow-lg">🖨️</div>
+                    <div>
+                        <h1 class="text-sm font-black text-white tracking-wider uppercase">PrintStudio</h1>
+                        <p class="text-[10px] text-emerald-400 font-bold tracking-widest">PRO SYSTEM</p>
+                    </div>
+                </div>
+                <!-- Close button inside drawer for mobile -->
+                <button id="closeMenuBtn" class="md:hidden text-emerald-400 hover:text-white p-1">✕</button>
+            </div>
+
+            <nav class="flex flex-col space-y-1.5">
+                <a href="/"
+                    class="flex items-center space-x-3 px-4 py-3 rounded-xl font-bold text-sm transition-all text-emerald-400/80 hover:bg-emerald-900/50 hover:text-emerald-200"><span>🖥️</span><span>Terminal</span></a>
+                <a href="/history"
+                    class="flex items-center space-x-3 px-4 py-3 rounded-xl font-bold text-sm transition-all text-emerald-400/80 hover:bg-emerald-900/50 hover:text-emerald-200"><span>📊</span><span>Archive</span></a>
+                <a href="/analytics" data-admin-only
+                    class="flex items-center space-x-3 px-4 py-3 rounded-xl font-bold text-sm transition-all text-emerald-400/80 hover:bg-emerald-900/50 hover:text-emerald-200"><span>📈</span><span>Analytics</span></a>
+                <a href="/inventory" data-admin-only
+                    class="flex items-center space-x-3 px-4 py-3 rounded-xl font-bold text-sm transition-all text-emerald-400/80 hover:bg-emerald-900/50 hover:text-emerald-200"><span>📦</span><span>Catalog</span></a>
+                <a href="/reports" data-admin-only
+                    class="flex items-center space-x-3 px-4 py-3 rounded-xl font-bold text-sm transition-all text-emerald-400/80 hover:bg-emerald-900/50 hover:text-emerald-200"><span>📄</span><span>Reports</span></a>
+                <a href="/cashiers" data-admin-only
+                    class="flex items-center space-x-3 px-4 py-3 rounded-xl font-bold text-sm transition-all bg-emerald-900/60 text-white"><span>👥</span><span>Cashiers</span></a>
+                
+                <a href="/loans" data-admin-only
+                    class="flex items-center space-x-3 px-4 py-3 rounded-xl font-bold text-sm transition-all bg-emerald-900/80 text-white shadow-lg">
+                    <span>💳</span><span>Loans Ledger</span>
+                </a>
+                <a href="/messages" data-admin-only
+                    class="flex items-center space-x-3 px-4 py-3 rounded-xl font-bold text-sm transition-all text-emerald-400/80 hover:bg-emerald-900/50 hover:text-emerald-200">
+                    <span>💬</span><span>Messages</span>
+                </a>
+                <a href="/account"
+                    class="flex items-center space-x-3 px-4 py-3 rounded-xl font-bold text-sm transition-all text-stone-400 hover:bg-stone-800 hover:text-stone-200">
+                    <span>⚙️</span><span>Settings</span>
+                </a>
+            </nav>
+        </div>
+
+        <!-- Bottom Section: Logout & Operator Info -->
+        <div class="space-y-4">
+            <div class="border-t border-emerald-900 pt-4">
+                <button id="logoutBtn"
+                    class="flex items-center space-x-3 px-4 py-3 w-full text-red-400 hover:bg-red-900/20 rounded-xl font-bold text-sm transition-all"><span>🚪</span><span>Logout</span></button>
+            </div>
+            <div class="border-t border-emerald-900 pt-4 flex items-center space-x-3 px-2">
+                <div
+                    class="w-8 h-8 rounded-full bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-xs font-black text-emerald-400">
+                    OP</div>
+                <div>
+                    <p class="text-xs font-bold text-white leading-tight">Main Counter</p>
+                    <span id="live-clock" class="text-[10px] font-mono font-medium text-emerald-600">00:00:00 AM</span>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 p-6 md:p-8 max-w-6xl mx-auto w-full overflow-y-auto">
+        <header class="mb-8">
+            <h2 class="text-2xl font-black text-white uppercase tracking-wider">Cashier Accounts</h2>
+            <p class="text-stone-400 text-xs mt-1">Create new operator profiles and manage active cashier accounts.</p>
+        </header>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Create Form -->
+            <div class="bg-stone-950 p-6 rounded-2xl border border-stone-800 shadow-xl h-fit">
+                <h3 class="text-sm font-bold text-white uppercase tracking-wider mb-4">Add New Cashier</h3>
+                <form id="createCashierForm" class="space-y-4">
+                    <div>
+                        <label class="block text-[10px] font-bold text-stone-500 uppercase tracking-wider mb-2">Username</label>
+                        <input type="text" id="newUsername" required
+                            class="w-full bg-stone-900 border border-stone-800 rounded-xl px-4 py-3 text-white focus:border-emerald-600 outline-none text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-bold text-stone-500 uppercase tracking-wider mb-2">Password</label>
+                        <input type="password" id="newPassword" required
+                            class="w-full bg-stone-900 border border-stone-800 rounded-xl px-4 py-3 text-white focus:border-emerald-600 outline-none text-sm">
+                    </div>
+                    <!-- NEW: Role Selection Dropdown -->
+                    <div>
+                        <label class="block text-[10px] font-bold text-stone-500 uppercase tracking-wider mb-2">Account Type</label>
+                        <select id="newRole"
+                            class="w-full bg-stone-900 border border-stone-800 rounded-xl px-4 py-3 text-white focus:border-emerald-600 outline-none text-sm">
+                            <option value="cashier">Shop Cashier</option>
+                            <option value="vendor">Third-Party Vendor</option>
+                        </select>
+                    </div>
+                    <div id="formMsg" class="text-xs font-bold text-center hidden"></div>
+                    <button type="submit" id="submitBtn"
+                        class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl transition-all shadow-lg text-sm">Create
+                        Account</button>
+                </form>
+            </div>
+
+            <!-- Cashier List Table -->
+            <div class="lg:col-span-2 bg-stone-950 p-6 rounded-2xl border border-stone-800 shadow-xl">
+                <h3 class="text-sm font-bold text-white uppercase tracking-wider mb-4">Active Cashiers</h3>
+                <div id="actionMsg" class="text-xs font-bold mb-3 hidden"></div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-sm">
+                        <thead>
+                            <tr class="border-b border-stone-800 text-[10px] text-stone-500 uppercase tracking-wider">
+                                <th class="pb-3">ID</th>
+                                <th class="pb-3">Username</th>
+                                <th class="pb-3">Login ID</th>
+                                <th class="pb-3">Role</th>
+                                <th class="pb-3">Created Date</th>
+                                <th class="pb-3 text-right">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="cashierTableBody" class="divide-y divide-stone-900 text-stone-300">
+                            <!-- Populated dynamically via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Cashier Performance / Sales Breakdown Section -->
+        <div class="mt-8 bg-stone-950 p-4 sm:p-6 rounded-2xl border border-stone-800 shadow-xl">
+            <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-6 gap-4">
+                <div>
+                    <h3 class="text-sm font-bold text-white uppercase tracking-wider">Cashier & Vendor Performance</h3>
+                    <p class="text-stone-400 text-xs">Overview of transactions processed by operators.</p>
+                </div>
+        
+                <!-- Filters Controls (Mobile Optimized) -->
+                <div class="flex flex-wrap items-center gap-2.5 sm:gap-3 w-full lg:w-auto">
+                    <div
+                        class="flex items-center space-x-2 bg-stone-900 border border-stone-800 rounded-xl px-3 py-1.5 flex-1 sm:flex-initial">
+                        <label
+                            class="text-[10px] font-bold text-stone-500 uppercase tracking-wider whitespace-nowrap">Period:</label>
+                        <select id="salesPeriod" onchange="handlePeriodChange()"
+                            class="bg-transparent text-white text-xs focus:outline-none w-full sm:w-auto cursor-pointer">
+                            <option value="all" class="bg-stone-900">All Time</option>
+                            <option value="daily" class="bg-stone-900">Daily</option>
+                            <option value="weekly" class="bg-stone-900">Weekly</option>
+                            <option value="monthly" class="bg-stone-900">Monthly</option>
+                        </select>
+                    </div>
+        
+                    <!-- Date Picker (Hidden unless 'Daily' is selected) -->
+                    <div id="datePickerContainer"
+                        class="hidden items-center space-x-2 bg-stone-900 border border-stone-800 rounded-xl px-3 py-1.5 flex-1 sm:flex-initial">
+                        <label
+                            class="text-[10px] font-bold text-stone-500 uppercase tracking-wider whitespace-nowrap">Date:</label>
+                        <input type="date" id="salesDate" onchange="loadCashierSales()"
+                            class="bg-transparent text-white text-xs focus:outline-none w-full sm:w-auto">
+                    </div>
+        
+                    <button onclick="loadCashierSales()"
+                        class="text-xs text-emerald-400 hover:text-emerald-300 font-semibold flex items-center justify-center space-x-1 bg-stone-900 px-3 py-2 sm:py-1.5 rounded-xl border border-stone-800 flex-1 sm:flex-initial">
+                        <span>🔄</span>
+                        <span>Refresh</span>
+                    </button>
+                </div>
+            </div>
+        
+            <!-- Responsive Table Wrapper -->
+            <div class="overflow-x-auto -mx-4 sm:mx-0 px-4 sm:px-0">
+                <table class="w-full text-left text-xs sm:text-sm min-w-[550px]">
+                    <thead>
+                        <tr class="border-b border-stone-800 text-[10px] text-stone-500 uppercase tracking-wider">
+                            <th class="pb-3 pr-4">Operator Name</th>
+                            <th class="pb-3 pr-4">Total Orders Processed</th>
+                            <th class="pb-3 pr-4 text-right">Total Revenue Generated</th>
+                            <th class="pb-3 text-right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="cashierSalesTableBody" class="divide-y divide-stone-900 text-stone-300">
+                        <tr>
+                            <td colspan="4" class="py-6 text-center text-stone-500 text-xs">Loading performance data...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    
+    </main>
+
+    <!-- Page Logic Script -->
+    <script>
+        // Mobile Menu Toggle Logic
+        const menuBtn = document.getElementById('menuBtn');
+        const closeMenuBtn = document.getElementById('closeMenuBtn');
+        const sidebar = document.getElementById('sidebar');
+        const sidebarOverlay = document.getElementById('sidebarOverlay');
+
+        function toggleMenu() {
+            sidebar.classList.toggle('-translate-x-full');
+            sidebarOverlay.classList.toggle('hidden');
+        }
+
+        menuBtn.addEventListener('click', toggleMenu);
+        closeMenuBtn.addEventListener('click', toggleMenu);
+        sidebarOverlay.addEventListener('click', toggleMenu);
+
+        // Live Clock Script
+        function updateClock() {
+            const now = new Date();
+            let hours = now.getHours();
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            const ampm = hours >= 12 ? 'PM' : 'AM';
+
+            hours = hours % 12;
+            hours = hours ? hours : 12;
+            const strHours = String(hours).padStart(2, '0');
+
+            const clockElement = document.getElementById('live-clock');
+            if (clockElement) {
+                clockElement.textContent = `${strHours}:${minutes}:${seconds} ${ampm}`;
+            }
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        // Cashier Management Logic
+        let cashiersData = [];
+
+        async function loadCashiers() {
+            try {
+                const res = await fetch('/api/cashiers');
+                cashiersData = await res.json();
+                renderTable();
+            } catch (err) {
+                console.error('Failed to load cashiers', err);
+            }
+        }
+
+        function renderTable() {
+                const tbody = document.getElementById('cashierTableBody');
+                tbody.innerHTML = '';
+
+                if (cashiersData.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="6" class="py-4 text-center text-stone-500 text-xs">No cashier accounts found.</td></tr>`;
+                    return;
+                }
+
+                cashiersData.forEach(c => {
+                const dateStr = new Date(c.created_at).toLocaleDateString();
+
+                // Give vendors a distinct amber/purple badge vs emerald for shop cashiers
+                const roleBadge = c.role === 'vendor'
+                    ? `<span class="bg-purple-950 text-purple-400 text-[10px] font-bold px-2.5 py-1 rounded-full border border-purple-900">Vendor</span>`
+                    : `<span class="bg-emerald-950 text-emerald-400 text-[10px] font-bold px-2.5 py-1 rounded-full border border-emerald-900">Cashier</span>`;
+
+                tbody.innerHTML += `
+        <tr class="hover:bg-stone-900/50" id="row-${c.id}">
+            <td class="py-3 font-mono text-xs">#${c.id}</td>
+            <td class="py-3 font-bold text-white">${c.username}</td>
+            <td class="py-3"><span class="bg-amber-950 text-amber-400 text-xs font-mono font-bold px-2.5 py-1 rounded-md border border-amber-900">${c.login_id || 'N/A'}</span></td>
+            <td class="py-3">${roleBadge}</td>
+            <td class="py-3 text-stone-400 text-xs">${dateStr}</td>
+            <td class="py-3 text-right space-x-1" id="action-cell-${c.id}">
+                <button onclick="generateResetCode(${c.id})" class="bg-blue-950/60 hover:bg-blue-900 text-blue-400 text-xs font-bold px-2.5 py-1.5 rounded-lg border border-blue-900/50 transition-all">Get Code</button>
+                <button onclick="showDeleteConfirm(${c.id})" class="bg-red-950/60 hover:bg-red-900 text-red-400 text-xs font-bold px-2.5 py-1.5 rounded-lg border border-red-900/50 transition-all">Delete</button>
+            </td>
+        </tr>
+    `;
+            });
+            }
+
+        async function generateResetCode(id) {
+                const actionMsg = document.getElementById('actionMsg');
+                try {
+                    const res = await fetch(`/api/cashiers/${id}/generate-reset-code`, { method: 'POST' });
+                    const result = await res.json();
+
+                    if (result.success && result.resetCode) {
+                        // Automatically copy the reset code to the clipboard
+                        await navigator.clipboard.writeText(result.resetCode);
+                        actionMsg.textContent = `${result.message} — (Copied to clipboard! 📋)`;
+                    } else {
+                        actionMsg.textContent = result.message;
+                    }
+
+                    actionMsg.classList.remove('hidden', 'text-red-400', 'text-emerald-400');
+                    actionMsg.classList.add(result.success ? 'text-emerald-400' : 'text-red-400');
+
+                    setTimeout(() => {
+                        actionMsg.classList.add('hidden');
+                    }, 6000);
+                } catch (err) {
+                    console.error('Error:', err);
+                    actionMsg.textContent = 'Server connection error or clipboard permission denied.';
+                    actionMsg.classList.remove('hidden', 'text-emerald-400');
+                    actionMsg.classList.add('text-red-400');
+
+                    setTimeout(() => {
+                        actionMsg.classList.add('hidden');
+                    }, 6000);
+                }
+            }
+        function showDeleteConfirm(id) {
+            const actionCell = document.getElementById(`action-cell-${id}`);
+            actionCell.innerHTML = `
+                <div class="flex items-center justify-end space-x-2">
+                    <span class="text-[10px] font-bold text-amber-400 uppercase">Confirm?</span>
+                    <button onclick="deleteCashier(${id})" class="bg-red-600 hover:bg-red-700 text-white text-[10px] font-bold px-2.5 py-1 rounded-md transition-all">Yes</button>
+                    <button onclick="renderTable()" class="bg-stone-800 hover:bg-stone-700 text-stone-300 text-[10px] font-bold px-2.5 py-1 rounded-md transition-all">No</button>
+                </div>
+            `;
+        }
+
+        async function deleteCashier(id) {
+                const actionMsg = document.getElementById('actionMsg');
+                try {
+                    const res = await fetch(`/api/cashiers/${id}`, { method: 'DELETE' });
+                    const result = await res.json();
+
+                    actionMsg.textContent = result.message;
+                    actionMsg.classList.remove('hidden', 'text-red-400', 'text-emerald-400');
+                    actionMsg.classList.add(result.success ? 'text-emerald-400' : 'text-red-400');
+
+                    if (result.success) {
+                        loadCashiers();
+                    }
+
+                    // Auto-hide action message after 4 seconds
+                    setTimeout(() => {
+                        actionMsg.classList.add('hidden');
+                    }, 4000);
+
+                } catch (err) {
+                    actionMsg.textContent = 'Server connection error.';
+                    actionMsg.classList.remove('hidden', 'text-emerald-400');
+                    actionMsg.classList.add('text-red-400');
+
+                    setTimeout(() => {
+                        actionMsg.classList.add('hidden');
+                    }, 4000);
+                }
+            }
+
+        // Inside your script submission block:
+            document.getElementById('createCashierForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const username = document.getElementById('newUsername').value;
+                const password = document.getElementById('newPassword').value;
+                const role = document.getElementById('newRole').value; // Get selected role
+                const formMsg = document.getElementById('formMsg');
+                const submitBtn = document.getElementById('submitBtn');
+
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'CREATING...';
+                formMsg.classList.add('hidden');
+
+                try {
+                    const res = await fetch('/api/cashiers', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ username, password, role }) // Send role to server
+                    });
+                    const result = await res.json();
+
+                    formMsg.textContent = result.message;
+                    formMsg.classList.remove('hidden', 'text-red-400', 'text-emerald-400');
+                    formMsg.classList.add(result.success ? 'text-emerald-400' : 'text-red-400');
+
+                    if (result.success) {
+                        document.getElementById('createCashierForm').reset();
+                        loadCashiers();
+                        setTimeout(() => { formMsg.classList.add('hidden'); }, 4000);
+                    }
+                } catch (err) {
+                    formMsg.textContent = 'Server connection error.';
+                    formMsg.classList.remove('hidden');
+                    formMsg.classList.add('text-red-400');
+                } finally {
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Create Account';
+                }
+            });
+
+        document.getElementById('logoutBtn').addEventListener('click', async () => {
+            await fetch('/api/logout', { method: 'POST' });
+            window.location.href = '/login';
+        });
+
+        loadCashiers();
+        loadCashierSales();
+        window.addEventListener('DOMContentLoaded', () => {
+                fetch('/api/current-user')
+                    .then(response => response.json())
+                    .then(data => {
+                        // If the user is NOT an admin (i.e., they are a cashier or vendor), hide admin elements
+                        if (data && data.role !== 'admin') {
+                            const adminElements = document.querySelectorAll('[data-admin-only]');
+                            adminElements.forEach(el => {
+                                el.style.display = 'none';
+                            });
+                        }
+                    })
+                    .catch(err => console.error('Failed to load user session info:', err));
+            });
+
+        async function loadCashierSales() {
+                try {
+                    const period = document.getElementById('salesPeriod') ? document.getElementById('salesPeriod').value : 'all';
+                    const dateInput = document.getElementById('salesDate');
+                    const date = dateInput ? dateInput.value : '';
+
+                    let url = `/api/cashiers/sales-summary?period=${period}`;
+                    if (period === 'daily' && date) {
+                        url += `&date=${date}`;
+                    }
+
+                    const res = await fetch(url);
+                    const data = await res.json();
+
+                    if (data.minDate && data.maxDate && dateInput) {
+                        dateInput.min = data.minDate;
+                        dateInput.max = data.maxDate;
+                    }
+
+                    const tbody = document.getElementById('cashierSalesTableBody');
+                    tbody.innerHTML = '';
+
+                    if (!data.success || !data.sales || data.sales.length === 0) {
+                        tbody.innerHTML = `<tr><td colspan="3" class="py-4 text-center text-stone-500 text-xs">No sales data recorded for cashiers or vendors in this period.</td></tr>`;
+                        return;
+                    }
+
+                    // 📊 SORT HERE: Highest to lowest revenue
+                    data.sales.sort((a, b) => parseFloat(b.total_revenue || 0) - parseFloat(a.total_revenue || 0));
+
+                    data.sales.forEach(stat => {
+                        const roleBadge = stat.role === 'vendor'
+                            ? `<span class="bg-purple-950 text-purple-400 text-[10px] font-bold px-2 py-0.5 rounded-full border border-purple-900">Vendor</span>`
+                            : `<span class="bg-emerald-950 text-emerald-400 text-[10px] font-bold px-2 py-0.5 rounded-full border border-emerald-900">Cashier</span>`;
+
+                        tbody.innerHTML += `
+        <tr class="hover:bg-stone-900/50">
+            <!-- 📱 Wrapped in a proper inner flex container to prevent squishing -->
+            <td class="py-3 font-bold text-white pr-4">
+                <div class="flex items-center gap-2 flex-wrap">
+                    <span class="whitespace-nowrap">${stat.username}</span>
+                    ${roleBadge}
+                </div>
+            </td>
+            <td class="py-3 font-mono text-stone-300 pr-4 whitespace-nowrap">${stat.total_orders || 0}</td>
+            <td class="py-3 font-mono font-bold text-emerald-400 text-right pr-4 whitespace-nowrap">ksh${parseFloat(stat.total_revenue || 0).toFixed(2)}</td>
+            <td class="py-3 text-right whitespace-nowrap">
+                <button onclick="openOperatorSalesModal('${stat.id}', '${stat.username}')" 
+                    class="bg-emerald-950/60 hover:bg-emerald-900 text-emerald-400 text-xs font-bold px-2.5 py-1.5 rounded-lg border border-emerald-900/50 transition-all">
+                    🔍 View & Print
+                </button>
+            </td>
+        </tr>
+    `;
+                    });
+                } catch (err) {
+                    console.error('Failed to load performance metrics', err);
+                    const tbody = document.getElementById('cashierSalesTableBody');
+                    tbody.innerHTML = `<tr><td colspan="3" class="py-4 text-center text-red-400 text-xs">Failed to load performance metrics.</td></tr>`;
+                }
+            }
+        function handlePeriodChange() {
+                const period = document.getElementById('salesPeriod').value;
+                const dateContainer = document.getElementById('datePickerContainer');
+                const dateInput = document.getElementById('salesDate');
+
+                if (period === 'daily') {
+                    dateContainer.classList.remove('hidden');
+                    dateContainer.classList.add('flex');
+                    if (!dateInput.value && dateInput.max) {
+                        dateInput.value = dateInput.max; // Defaults to today if empty
+                    }
+                } else {
+                    dateContainer.classList.remove('flex');
+                    dateContainer.classList.add('hidden');
+                }
+                loadCashierSales();
+            }
+
+        async function openOperatorSalesModal(operatorId, operatorName) {
+                document.getElementById('modalOperatorName').textContent = `${operatorName} — Sales Report`;
+                const container = document.getElementById('modalPrintArea');
+                container.innerHTML = `<p class="text-center text-stone-500 text-xs py-4">Loading details...</p>`;
+
+                document.getElementById('operatorSalesModal').classList.remove('hidden');
+
+                try {
+                    const period = document.getElementById('salesPeriod').value;
+                    const dateInput = document.getElementById('salesDate');
+                    let url = `/api/cashiers/${operatorId}/sales-details?period=${period}`;
+                    if (period === 'daily' && dateInput && dateInput.value) {
+                        url += `&date=${dateInput.value}`;
+                    }
+
+                    const res = await fetch(url);
+                    const data = await res.json();
+
+                    if (!data.success || !data.transactions || data.transactions.length === 0) {
+                        container.innerHTML = `<p class="text-center text-stone-500 text-xs py-4">No individual transactions recorded for this operator in this period.</p>`;
+                        return;
+                    }
+
+                    let html = `
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-xs min-w-[500px]">
+                    <thead>
+                        <tr class="border-b border-stone-800 text-[10px] text-stone-500 uppercase">
+                            <th class="pb-2">Order ID</th>
+                            <th class="pb-2">Date / Time</th>
+                            <th class="pb-2">Items Sold</th>
+                            <th class="pb-2 text-right">Total Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-stone-900 text-stone-300">
+        `;
+
+                    data.transactions.forEach(tx => {
+                        const txDate = new Date(tx.created_at).toLocaleString();
+                        // Displays exact items, e.g., "2x Color Print, 1x Spiral Binding"
+                        const soldItems = tx.items_detail || tx.items_summary || 'No item details recorded';
+
+                        html += `
+                <tr>
+                    <td class="py-3 font-mono text-emerald-400 font-bold whitespace-nowrap">#${tx.id}</td>
+                    <td class="py-3 text-stone-400 whitespace-nowrap">${txDate}</td>
+                    <td class="py-3 text-stone-200">${soldItems}</td>
+                    <td class="py-3 font-mono font-bold text-right text-emerald-300 whitespace-nowrap">ksh${parseFloat(tx.total_amount || 0).toFixed(2)}</td>
+                </tr>
+            `;
+                    });
+
+                    html += `</tbody></table></div>`;
+                    container.innerHTML = html;
+                } catch (err) {
+                    console.error('Failed to load transaction details:', err);
+                    container.innerHTML = `<p class="text-center text-red-400 text-xs py-4">Failed to load transaction details from server.</p>`;
+                }
+            }
+
+            function closeOperatorSalesModal() {
+                document.getElementById('operatorSalesModal').classList.add('hidden');
+            }
+
+            function printModalSales() {
+                const printContent = document.getElementById('modalPrintArea').innerHTML;
+                const operatorTitle = document.getElementById('modalOperatorName').textContent;
+                const periodVal = document.getElementById('salesPeriod').value;
+
+                const originalBody = document.body.innerHTML;
+
+                document.body.innerHTML = `
+        <div style="font-family: Arial, sans-serif; padding: 30px; color: #000;">
+            <h2 style="margin-bottom: 2px; font-size: 18px;">PrintStudio Pro — Operator Performance Receipt</h2>
+            <h3 style="margin-top: 0; color: #222; font-size: 14px;">${operatorTitle}</h3>
+            <p style="font-size: 11px; color: #555; margin-bottom: 20px;">Filter Period: ${periodVal.toUpperCase()} | Generated: ${new Date().toLocaleString()}</p>
+            <hr style="border: 0; border-top: 1px solid #ddd; margin-bottom: 15px;">
+            ${printContent}
+        </div>
+    `;
+
+                window.print();
+                document.body.innerHTML = originalBody;
+                window.location.reload();
+            }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const currentPath = window.location.pathname;
+            const navLinks = document.querySelectorAll('aside nav a');
+
+            navLinks.forEach(link => {
+                const href = link.getAttribute('href');
+                const isActive = href === '/' ? currentPath === '/' || currentPath === '' : currentPath.endsWith(href);
+
+                if (isActive) {
+                    link.className = "flex items-center space-x-3 px-4 py-3 rounded-xl font-bold text-sm transition-all bg-emerald-900 text-white shadow-sm ring-1 ring-white/5";
+                } else {
+                    link.className = "flex items-center space-x-3 px-4 py-3 rounded-xl font-bold text-sm transition-all text-emerald-400/80 hover:bg-emerald-900/50 hover:text-emerald-200";
+                }
+            });
+            // Explicitly clear the date filter on fresh load so it shows all recent logs
+            document.getElementById('messageDateFilter').value = '';
+
+            loadMessages();
+        }); 
+    </script>
+
+
+<!-- Operator Sales Detail Modal -->
+<div id="operatorSalesModal" class="fixed inset-0 bg-black/80 z-50 hidden flex items-center justify-center p-3 sm:p-4">
+    <div
+        class="bg-stone-950 border border-stone-800 rounded-2xl w-full max-w-2xl p-4 sm:p-6 shadow-2xl max-h-[90vh] flex flex-col">
+        <div class="flex justify-between items-center pb-3 sm:pb-4 border-b border-stone-800">
+            <div>
+                <h3 id="modalOperatorName" class="text-xs sm:text-sm font-bold text-white uppercase tracking-wider">
+                    Operator Sales Report</h3>
+                <p class="text-[10px] sm:text-xs text-stone-400">Detailed transaction breakdown.</p>
+            </div>
+            <button onclick="closeOperatorSalesModal()"
+                class="text-stone-400 hover:text-white text-base sm:text-lg font-bold p-1">✕</button>
+        </div>
+
+        <div id="modalPrintArea" class="py-3 sm:py-4 overflow-y-auto flex-1 space-y-3">
+            <!-- Dynamic rows inserted here -->
+        </div>
+
+        <div
+            class="pt-3 sm:pt-4 border-t border-stone-800 flex flex-col-reverse sm:flex-row justify-end gap-2 sm:space-x-3">
+            <button onclick="closeOperatorSalesModal()"
+                class="w-full sm:w-auto bg-stone-900 hover:bg-stone-800 text-stone-300 px-4 py-2.5 sm:py-2 rounded-xl text-xs font-bold">Close</button>
+            <button onclick="printModalSales()"
+                class="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2.5 sm:py-2 rounded-xl text-xs font-bold flex items-center justify-center space-x-2">
+                <span>🖨️ Print Report</span>
+            </button>
+        </div>
+    </div>
+</div>
+</body>
+
+</html>

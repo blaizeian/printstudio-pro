@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PrintStudio Pos - Loans Ledger</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-stone-900 text-stone-100 font-sans min-h-dvh flex flex-col md:flex-row antialiased">
+
+    <!-- Mobile Header Bar (Only visible on phones) -->
+    <header
+        class="md:hidden flex items-center justify-between bg-emerald-950 text-emerald-300 p-4 border-b border-emerald-900 sticky top-0 z-30">
+        <div class="flex items-center space-x-3">
+            <div class="bg-emerald-600 p-2 rounded-xl text-lg font-black text-white shadow-lg">🖨️</div>
+            <h1 class="text-sm font-black text-white tracking-wider uppercase">PrintStudio</h1>
+        </div>
+        <button onclick="toggleMobileMenu()" class="bg-emerald-900/50 p-2 rounded-xl text-white focus:outline-none">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16">
+                </path>
+            </svg>
+        </button>
+    </header>
+
+    <!-- GREEN SIDEBAR NAVIGATION PANEL -->
+    <aside id="sidebar"
+        class="fixed inset-y-0 left-0 z-40 w-64 bg-emerald-950 h-screen text-emerald-300 p-4 flex flex-col justify-between border-r border-emerald-900 shadow-2xl transform -translate-x-full md:translate-x-0 md:sticky md:top-0 transition-transform duration-300 shrink-0">
+    
+        <!-- Top Section: Logo & Nav Wrapper -->
+        <div class="flex flex-col space-y-4 flex-1 overflow-hidden">
+            <!-- Logo Header -->
+            <div class="flex items-center justify-between shrink-0 px-2">
+                <div class="flex items-center space-x-3">
+                    <div class="bg-emerald-600 p-2 rounded-xl text-lg font-black text-white shadow-lg">🖨️</div>
+                    <div>
+                        <h1 class="text-sm font-black text-white tracking-wider uppercase">PrintStudio</h1>
+                        <p class="text-[10px] text-emerald-400 font-bold tracking-widest">PRO SYSTEM</p>
+                    </div>
+                </div>
+                <!-- Close button for mobile drawer -->
+                <button onclick="toggleMobileMenu()"
+                    class="md:hidden text-emerald-400 hover:text-white p-1 text-lg font-bold">
+                    ✕
+                </button>
+            </div>
+    
+            <!-- Scrollable Navigation Area -->
+            <nav class="flex flex-col space-y-1 overflow-y-auto flex-1 pr-1" id="sidebar-nav">
+                <a href="/"
+                    class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl font-bold text-sm transition-all text-emerald-400/80 hover:bg-emerald-900/50 hover:text-emerald-200">
+                    <span>🖥️</span><span>Terminal</span>
+                </a>
+                <a href="/history" data-vendor-exclude
+                    class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl font-bold text-sm transition-all text-emerald-400/80 hover:bg-emerald-900/50 hover:text-emerald-200">
+                    <span>📊</span><span>Archive</span>
+                </a>
+                <a href="/analytics" data-admin-only
+                    class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl font-bold text-sm transition-all text-emerald-400/80 hover:bg-emerald-900/50 hover:text-emerald-200">
+                    <span>📈</span><span>Analytics</span>
+                </a>
+                <a href="/inventory" data-admin-only
+                    class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl font-bold text-sm transition-all text-emerald-400/80 hover:bg-emerald-900/50 hover:text-emerald-200">
+                    <span>📦</span><span>Catalog</span>
+                </a>
+                <a href="/reports" data-admin-only
+                    class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl font-bold text-sm transition-all text-emerald-400/80 hover:bg-emerald-900/50 hover:text-emerald-200">
+                    <span>📄</span><span>reports</span>
+                </a>
+                <a href="/cashiers" data-admin-only
+                    class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl font-bold text-sm transition-all text-emerald-400/80 hover:bg-emerald-900/50 hover:text-emerald-200">
+                    <span>👥</span><span>Cashiers</span>
+                </a>
+                
+                <a href="/loans" data-admin-only
+                    class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl font-bold text-sm transition-all text-emerald-400/80 hover:bg-emerald-900/50 hover:text-emerald-200">
+                    <span>💳</span><span>Loans Ledger</span>
+                </a>
+                <a href="/messages" data-admin-only
+                    class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl font-bold text-sm transition-all text-emerald-400/80 hover:bg-emerald-900/50 hover:text-emerald-200">
+                    <span>💬</span><span>Messages</span>
+                </a>
+                <a href="/account"
+                    class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl font-bold text-sm transition-all text-emerald-400/80 hover:bg-emerald-900/50 hover:text-emerald-200">
+                    <span>⚙️</span><span>Settings</span>
+                </a>
+            </nav>
+        </div>
+    
+        <!-- Bottom Section: Logout & Operator Info -->
+        <div class="space-y-3 shrink-0 pt-3 border-t border-emerald-900">
+            <div>
+                <button id="logoutBtn"
+                    class="flex items-center space-x-3 px-3.5 py-2.5 w-full text-red-400 hover:bg-red-900/20 rounded-xl font-bold text-sm transition-all">
+                    <span>🚪</span><span>Logout</span>
+                </button>
+            </div>
+            <div class="flex items-center space-x-3 px-2">
+                <div
+                    class="w-8 h-8 rounded-full bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-xs font-black text-emerald-400">
+                    OP</div>
+                <div>
+                    <p id="operatorName" class="text-xs font-bold text-white leading-tight">main counter</p>
+                    <span id="live-clock" class="text-[10px] font-mono font-medium text-emerald-600">00:00:00 AM</span>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT CONTAINER -->
+    <main class="flex-1 p-4 md:p-8 overflow-y-auto space-y-6">
+        <!-- Page Header -->
+        <div
+            class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-stone-950 p-6 rounded-2xl border border-stone-800 shadow-xl">
+            <div>
+                <h2 class="text-xl font-extrabold text-white tracking-wide flex items-center gap-2">
+                    <span>💳</span> Customer Loans & Credit Ledger
+                </h2>
+                <p class="text-xs text-stone-400 mt-1">Track active customer balances, view deposits, and mark credits
+                    as paid.</p>
+            </div>
+            <div class="flex items-center gap-3">
+                <div class="bg-amber-500/10 border border-amber-500/20 px-4 py-2 rounded-xl">
+                    <span class="text-[10px] uppercase font-bold text-amber-400 block">Total Outstanding Debt</span>
+                    <span id="total-debt-display" class="text-lg font-black text-amber-400">0.00</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Loans Table Container -->
+        <div class="bg-stone-950 rounded-2xl border border-stone-800 shadow-xl overflow-hidden">
+            <div class="p-4 border-b border-stone-800 flex justify-between items-center">
+                <h3 class="text-xs font-bold uppercase tracking-wider text-stone-300">Active Credit Accounts</h3>
+                <input type="text" id="loan-search" placeholder="Search customer or phone..."
+                    class="bg-stone-900 border border-stone-800 rounded-lg px-3 py-1.5 text-xs text-stone-200 focus:outline-none focus:border-emerald-500 w-48 md:w-64">
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse text-xs">
+                    <thead>
+                        <tr
+                            class="bg-stone-900/60 text-stone-400 uppercase text-[10px] tracking-wider border-b border-stone-800">
+                            <th class="p-3">Order ID</th>
+                            <th class="p-3">Date</th>
+                            <th class="p-3">Customer Name</th>
+                            <th class="p-3">Phone</th>
+                            <th class="p-3">Total (Ksh)</th>
+                            <th class="p-3">Deposit (Ksh)</th>
+                            <th class="p-3">Balance Owed (Ksh)</th>
+                            <th class="p-3">Status</th>
+                            <th class="p-3 text-right">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="loans-table-body" class="divide-y divide-stone-800/60">
+                        <!-- Dynamic rows will load here -->
+                        <tr>
+                            <td colspan="9" class="p-6 text-center text-stone-500">Loading loan records...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Toggle Mobile Navigation Menu Drawer
+        function toggleMobileMenu() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('-translate-x-full');
+        }
+
+        // Fetch and Render Loans Data
+        async function fetchLoans() {
+            try {
+                const res = await fetch('/api/loans');
+                const data = await res.json();
+
+                if (data.success) {
+                    renderLoans(data.loans);
+                } else {
+                    document.getElementById('loans-table-body').innerHTML = `<tr><td colspan="9" class="p-6 text-center text-red-400">Failed to load loan data.</td></tr>`;
+                }
+            } catch (err) {
+                console.error(err);
+                document.getElementById('loans-table-body').innerHTML = `<tr><td colspan="9" class="p-6 text-center text-red-400">System error loading records.</td></tr>`;
+            }
+        }
+
+        const logoutBtn = document.getElementById('logoutBtn');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', async () => {
+                    try {
+                        const response = await fetch('/api/logout', { method: 'POST' });
+                        const result = await response.json();
+
+                        if (result.success) {
+                            window.location.href = '/login';
+                        } else {
+                            alert('Logout failed!');
+                        }
+                    } catch (err) {
+                        console.error('Logout error:', err);
+                        alert('Something went wrong during logout.');
+                    }
+                });
+            }
+
+        function renderLoans(loans) {
+            const tbody = document.getElementById('loans-table-body');
+            tbody.innerHTML = '';
+
+            let totalDebt = 0;
+
+            if (loans.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="9" class="p-6 text-center text-stone-500">No loan records found.</td></tr>`;
+                document.getElementById('total-debt-display').innerText = "0.00";
+                return;
+            }
+
+            loans.forEach(loan => {
+                if (loan.loan_status === 'unpaid') {
+                    totalDebt += parseFloat(loan.loan_balance || 0);
+                }
+
+                const isPaid = loan.loan_status === 'paid';
+                const statusBadge = isPaid
+                    ? `<span class="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded-full text-[10px] font-bold">Paid</span>`
+                    : `<span class="bg-amber-500/10 text-amber-400 border border-amber-500/20 px-2 py-0.5 rounded-full text-[10px] font-bold">Unpaid</span>`;
+
+                const actionBtn = isPaid
+                    ? `<span class="text-stone-600 font-medium">Settled</span>`
+                    : `<button onclick="markLoanPaid(${loan.id})" class="bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1 rounded-lg font-bold transition-all shadow-sm">Mark Paid</button>`;
+
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-stone-900/40 transition-colors";
+                tr.innerHTML = `
+                    <td class="p-3 font-mono font-bold text-stone-300">#${loan.id}</td>
+                    <td class="p-3 text-stone-400">${new Date(loan.created_at).toLocaleString()}</td>
+                    <td class="p-3 font-semibold text-white">${loan.customer_name || 'N/A'}</td>
+                    <td class="p-3 text-stone-300">${loan.customer_phone || 'N/A'}</td>
+                    <td class="p-3 text-stone-300">${parseFloat(loan.total_amount).toFixed(2)}</td>
+                    <td class="p-3 text-stone-300">${parseFloat(loan.deposit_amount || 0).toFixed(2)}</td>
+                    <td class="p-3 font-black text-amber-400">${parseFloat(loan.loan_balance || 0).toFixed(2)}</td>
+                    <td class="p-3">${statusBadge}</td>
+                    <td class="p-3 text-right">${actionBtn}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            document.getElementById('total-debt-display').innerText = totalDebt.toFixed(2);
+        }
+
+
+        window.addEventListener('DOMContentLoaded', () => {
+                const currentPath = window.location.pathname;
+                const navLinks = document.querySelectorAll('aside nav a');
+
+                navLinks.forEach(link => {
+                    const href = link.getAttribute('href');
+                    const isActive = href === '/' ? currentPath === '/' || currentPath === '' : currentPath.endsWith(href);
+
+                    if (isActive) {
+                        link.className = "flex items-center space-x-3 px-4 py-3 rounded-xl font-bold text-sm transition-all bg-emerald-900 text-white shadow-sm ring-1 ring-white/5";
+                    } else {
+                        link.className = "flex items-center space-x-3 px-4 py-3 rounded-xl font-bold text-sm transition-all text-emerald-400/80 hover:bg-emerald-900/50 hover:text-emerald-200";
+                    }
+                });
+                // Explicitly clear the date filter on fresh load so it shows all recent logs
+                document.getElementById('messageDateFilter').value = '';
+
+                loadMessages();
+            }); 
+
+        
+
+        async function markLoanPaid(orderId) {
+            if (!confirm(`Mark order #${orderId} as fully paid and settled?`)) return;
+
+            try {
+                const res = await fetch(`/api/loans/${orderId}/pay`, { method: 'POST' });
+                const data = await res.json();
+                if (data.success) {
+                    fetchLoans(); // Refresh table
+                } else {
+                    alert(data.message || "Failed to update loan status.");
+                }
+            } catch (err) {
+                console.error(err);
+                alert("Server error occurred.");
+            }
+        }
+
+        // Live Clock
+        setInterval(() => {
+            const now = new Date();
+            document.getElementById('live-clock').innerText = now.toLocaleTimeString();
+        }, 1000);
+
+        
+
+        // Initialize on load
+        window.addEventListener('DOMContentLoaded', fetchLoans);
+    </script>
+</body>
+
+</html>

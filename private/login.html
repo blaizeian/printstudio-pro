@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - PrintStudio Pro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Shake Animation */
+        @keyframes shake {
+    
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+    
+            25% {
+                transform: translateX(-5px);
+            }
+    
+            75% {
+                transform: translateX(5px);
+            }
+        }
+    
+        .shake {
+            animation: shake 0.3s ease-in-out;
+        }
+    </style>
+</head>
+
+<body class="bg-stone-900 text-stone-100 font-sans min-h-screen flex items-center justify-center p-6">
+
+    <div class="w-full max-w-sm bg-stone-950 p-8 rounded-2xl border border-stone-800 shadow-2xl">
+        <div class="text-center mb-8">
+            <div
+                class="bg-emerald-600 w-16 h-16 rounded-2xl text-3xl font-black text-white shadow-lg mx-auto flex items-center justify-center mb-4">
+                🖨️</div>
+            <h1 class="text-xl font-black text-white uppercase tracking-wider">PrintStudio</h1>
+            <p class="text-[10px] text-emerald-500 font-bold tracking-widest mt-1">PRO SYSTEM ACCESS</p>
+        </div>
+
+        <form id="loginForm" class="space-y-4">
+            <!-- Username -->
+            <div>
+                <label class="block text-[10px] font-bold text-stone-500 uppercase tracking-wider mb-2">Username or Login ID</label><input type="text" id="username" required
+                    class="w-full bg-stone-900 border border-stone-800 rounded-xl px-4 py-3 text-white focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600 outline-none transition-all">
+            </div>
+
+            <!-- Password with Toggle -->
+            <div class="relative">
+                <label class="block text-[10px] font-bold text-stone-500 uppercase tracking-wider mb-2">Password</label>
+                <input type="password" id="password" required
+                    class="w-full bg-stone-900 border border-stone-800 rounded-xl px-4 py-3 text-white focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600 outline-none transition-all">
+                <button type="button" id="togglePassword"
+                    class="absolute right-3 top-[34px] text-[10px] font-bold text-emerald-600 hover:text-emerald-400">SHOW</button>
+            </div>
+
+            <!-- Error Message Area -->
+            <div id="error-msg" class="text-red-400 text-[10px] font-bold text-center hidden">Invalid username or
+                password</div>
+
+            <button type="submit" id="loginBtn"
+                class="w-full mt-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl transition-all shadow-lg shadow-emerald-900/20 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed">
+                LOGIN
+            </button>
+            <div class="mt-4 text-center">
+                <button type="button" onclick="toggleResetView()" class="text-xs text-emerald-400 hover:underline">Forgot password?  
+                    Reset with code</button>
+            </div>
+        </form>
+
+        <!-- Reset Password Form -->
+        <form id="resetForm" class="space-y-4 hidden mt-4 border-t border-stone-800 pt-4">
+            <h3 class="text-xs font-bold text-white uppercase tracking-wider">Reset Password</h3>
+            <div>
+                <label class="block text-[10px] font-bold text-stone-500 uppercase tracking-wider mb-1">Username or Login
+                    ID</label>
+                <input type="text" id="resetIdentifier" required
+                    class="w-full bg-stone-900 border border-stone-800 rounded-xl px-4 py-2.5 text-white focus:border-emerald-600 outline-none text-sm">
+            </div>
+            <div>
+                <label class="block text-[10px] font-bold text-stone-500 uppercase tracking-wider mb-1">6-Character Reset
+                    Code</label>
+                <input type="text" id="resetCode" maxlength="6" required
+                    class="w-full bg-stone-900 border border-stone-800 rounded-xl px-4 py-2.5 text-white focus:border-emerald-600 outline-none text-sm font-mono uppercase">
+            </div>
+            <div>
+                <label class="block text-[10px] font-bold text-stone-500 uppercase tracking-wider mb-1">New Password</label>
+                <input type="password" id="resetNewPassword" required
+                    class="w-full bg-stone-900 border border-stone-800 rounded-xl px-4 py-2.5 text-white focus:border-emerald-600 outline-none text-sm">
+            </div>
+            <div id="resetMsg" class="text-xs font-bold text-center hidden"></div>
+            <button type="submit"
+                class="w-full bg-amber-600 hover:bg-amber-700 text-white font-bold py-2.5 rounded-xl transition-all text-sm">Update
+                Password</button>
+            <button type="button" onclick="toggleResetView()" class="w-full text-stone-400 text-xs hover:text-white mt-1">Back
+                to Login</button>
+        </form>
+    </div>
+    
+
+    <script>
+        const loginForm = document.getElementById('loginForm');
+        const loginBtn = document.getElementById('loginBtn');
+        const errorMsg = document.getElementById('error-msg');
+        const passwordInput = document.getElementById('password');
+        const toggleBtn = document.getElementById('togglePassword');
+
+        // Define the card to shake
+        const loginCard = document.querySelector('.max-w-sm');
+
+        // Toggle Password Visibility
+        toggleBtn.addEventListener('click', () => {
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            toggleBtn.textContent = type === 'password' ? 'SHOW' : 'HIDE';
+        });
+
+        function toggleResetView() {
+                const loginForm = document.getElementById('loginForm'); // assuming your main login form has this ID
+                const resetForm = document.getElementById('resetForm');
+                resetForm.classList.toggle('hidden');
+                if (loginForm) loginForm.classList.toggle('hidden');
+            }
+
+            document.getElementById('resetForm').addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    const identifier = document.getElementById('resetIdentifier').value;
+                    const reset_code = document.getElementById('resetCode').value;
+                    const new_password = document.getElementById('resetNewPassword').value;
+                    const resetMsg = document.getElementById('resetMsg');
+
+                    try {
+                        const res = await fetch('/api/auth/reset-password', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ identifier, reset_code, new_password })
+                        });
+                        const result = await res.json();
+
+                        resetMsg.textContent = result.message;
+                        resetMsg.classList.remove('hidden', 'text-red-400', 'text-emerald-400');
+                        resetMsg.classList.add(result.success ? 'text-emerald-400' : 'text-red-400');
+
+                        if (result.success) {
+                            setTimeout(() => {
+                                toggleResetView();
+                            }, 2000);
+                        }
+                    } catch (err) {
+                        resetMsg.textContent = 'Server connection error.';
+                        resetMsg.classList.remove('hidden');
+                        resetMsg.classList.add('text-red-400');
+                    }
+                });
+
+        // Shake function
+        function triggerShake() {
+            loginCard.classList.add('shake');
+            setTimeout(() => loginCard.classList.remove('shake'), 500);
+        }
+
+        // Form Submit
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            loginBtn.disabled = true;
+            loginBtn.textContent = 'AUTHENTICATING...';
+            errorMsg.classList.add('hidden');
+
+            const username = document.getElementById('username').value;
+            const password = passwordInput.value;
+
+            try {
+                const response = await fetch('/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    window.location.href = '/';
+                } else {
+                    errorMsg.classList.remove('hidden');
+                    triggerShake(); // <--- CALL IT HERE
+                    loginBtn.disabled = false;
+                    loginBtn.textContent = 'LOGIN';
+                }
+            } catch (err) {
+                errorMsg.textContent = 'Server connection error.';
+                errorMsg.classList.remove('hidden');
+                triggerShake(); // <--- AND HERE
+                loginBtn.disabled = false;
+                loginBtn.textContent = 'LOGIN';
+            }
+        });
+    </script>
+</body>
+
+</html>

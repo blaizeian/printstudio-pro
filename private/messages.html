@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PrintStudio Pro - System Messages</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-stone-900 text-stone-100 font-sans min-h-dvh flex flex-col md:flex-row antialiased">
+
+    <!-- Mobile Header Bar (Only visible on phones) -->
+    <header
+        class="md:hidden flex items-center justify-between bg-emerald-950 text-emerald-300 p-4 border-b border-emerald-900 sticky top-0 z-30">
+        <div class="flex items-center space-x-3">
+            <div class="bg-emerald-600 p-2 rounded-xl text-lg font-black text-white shadow-lg">🖨️</div>
+            <h1 class="text-sm font-black text-white tracking-wider uppercase">PrintStudio</h1>
+        </div>
+        <button onclick="toggleMobileMenu()" class="bg-emerald-900/50 p-2 rounded-xl text-white focus:outline-none">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16">
+                </path>
+            </svg>
+        </button>
+    </header>
+
+    <!-- SIDEBAR NAVIGATION PANEL (Sticky Desktop + Mobile Drawer) -->
+    <!-- GREEN SIDEBAR NAVIGATION PANEL -->
+    <aside id="sidebar"
+        class="fixed inset-y-0 left-0 z-40 w-64 bg-emerald-950 h-screen text-emerald-300 p-4 flex flex-col justify-between border-r border-emerald-900 shadow-2xl transform -translate-x-full md:translate-x-0 md:sticky md:top-0 transition-transform duration-300 shrink-0">
+    
+        <!-- Top Section: Logo & Nav Wrapper -->
+        <div class="flex flex-col space-y-4 flex-1 overflow-hidden">
+            <!-- Logo Header -->
+            <div class="flex items-center justify-between shrink-0 px-2">
+                <div class="flex items-center space-x-3">
+                    <div class="bg-emerald-600 p-2 rounded-xl text-lg font-black text-white shadow-lg">🖨️</div>
+                    <div>
+                        <h1 class="text-sm font-black text-white tracking-wider uppercase">PrintStudio</h1>
+                        <p class="text-[10px] text-emerald-400 font-bold tracking-widest">PRO SYSTEM</p>
+                    </div>
+                </div>
+                <!-- Close button for mobile drawer -->
+                <button onclick="toggleMobileMenu()"
+                    class="md:hidden text-emerald-400 hover:text-white p-1 text-lg font-bold">
+                    ✕
+                </button>
+            </div>
+    
+            <!-- Scrollable Navigation Area -->
+            <nav class="flex flex-col space-y-1 overflow-y-auto flex-1 pr-1" id="sidebar-nav">
+                <a href="/"
+                    class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl font-bold text-sm transition-all text-emerald-400/80 hover:bg-emerald-900/50 hover:text-emerald-200">
+                    <span>🖥️</span><span>Terminal</span>
+                </a>
+                <a href="/history" data-vendor-exclude
+                    class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl font-bold text-sm transition-all text-emerald-400/80 hover:bg-emerald-900/50 hover:text-emerald-200">
+                    <span>📊</span><span>Archive</span>
+                </a>
+                <a href="/analytics" data-admin-only
+                    class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl font-bold text-sm transition-all text-emerald-400/80 hover:bg-emerald-900/50 hover:text-emerald-200">
+                    <span>📈</span><span>Analytics</span>
+                </a>
+                <a href="/inventory" data-admin-only
+                    class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl font-bold text-sm transition-all text-emerald-400/80 hover:bg-emerald-900/50 hover:text-emerald-200">
+                    <span>📦</span><span>Catalog</span>
+                </a>
+                <a href="/reports" data-admin-only
+                    class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl font-bold text-sm transition-all text-emerald-400/80 hover:bg-emerald-900/50 hover:text-emerald-200">
+                    <span>📄</span><span>reports</span>
+                </a>
+                <a href="/cashiers" data-admin-only
+                    class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl font-bold text-sm transition-all text-emerald-400/80 hover:bg-emerald-900/50 hover:text-emerald-200">
+                    <span>👥</span><span>Cashiers</span>
+                </a>
+                
+                <a href="/loans" data-admin-only
+                    class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl font-bold text-sm transition-all text-emerald-400/80 hover:bg-emerald-900/50 hover:text-emerald-200">
+                    <span>💳</span><span>Loans Ledger</span>
+                </a>
+                <a href="/messages" data-admin-only
+                    class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl font-bold text-sm transition-all text-emerald-400/80 hover:bg-emerald-900/50 hover:text-emerald-200">
+                    <span>💬</span><span>Messages</span>
+                </a>
+                <a href="/account"
+                    class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl font-bold text-sm transition-all text-emerald-400/80 hover:bg-emerald-900/50 hover:text-emerald-200">
+                    <span>⚙️</span><span>Settings</span>
+                </a>
+            </nav>
+        </div>
+    
+        <!-- Bottom Section: Logout & Operator Info -->
+        <div class="space-y-3 shrink-0 pt-3 border-t border-emerald-900">
+            <div>
+                <button id="logoutBtn"
+                    class="flex items-center space-x-3 px-3.5 py-2.5 w-full text-red-400 hover:bg-red-900/20 rounded-xl font-bold text-sm transition-all">
+                    <span>🚪</span><span>Logout</span>
+                </button>
+            </div>
+            <div class="flex items-center space-x-3 px-2">
+                <div
+                    class="w-8 h-8 rounded-full bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-xs font-black text-emerald-400">
+                    OP</div>
+                <div>
+                    <p id="operatorName" class="text-xs font-bold text-white leading-tight">main counter</p>
+                    <span id="live-clock" class="text-[10px] font-mono font-medium text-emerald-600">00:00:00 AM</span>
+                </div>
+            </div>
+        </div>
+    </aside>
+    
+    <script>
+        // Auto-highlight active link based on current URL path
+        document.addEventListener('DOMContentLoaded', () => {
+            const currentPath = window.location.pathname;
+            const navLinks = document.querySelectorAll('#sidebar-nav a');
+
+            navLinks.forEach(link => {
+                if (link.getAttribute('href') === currentPath) {
+                    link.className = "flex items-center space-x-3 px-3.5 py-2.5 rounded-xl font-bold text-sm transition-all bg-emerald-900 text-white shadow-lg";
+                }
+            });
+        });
+    </script>
+
+    <!-- CORE INTERFACE AREA -->
+    <main class="flex-1 p-4 md:p-8 overflow-y-auto">
+        <div class="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div>
+                <h2 class="text-2xl font-black text-white tracking-tight">System Messages & Activity Log</h2>
+                <p class="text-xs text-stone-400 mt-1">Audit trail tracking stock warnings, account updates, and
+                    deletions.</p>
+            </div>
+            <button onclick="loadMessages()"
+                class="bg-stone-800 hover:bg-stone-700 text-stone-200 text-xs font-bold px-4 py-2.5 rounded-xl border border-stone-700 transition-colors self-start sm:self-auto">
+                🔄 Refresh Logs
+            </button>
+        </div>
+
+        <!-- Responsive Date Filter Bar -->
+        <!-- Responsive Controls Bar (Date Filter + Keyword Search) -->
+        <div
+            class="mb-6 flex flex-col md:flex-row items-stretch md:items-center gap-3 bg-stone-950 p-4 rounded-2xl border border-stone-800 shadow-xl">
+            <!-- Date Filter -->
+            <div class="flex items-center space-x-2 flex-1">
+                <span class="text-xs text-stone-400 font-bold uppercase tracking-wider shrink-0">Date:</span>
+                <input type="date" id="messageDateFilter" onchange="loadMessages()"
+                    class="bg-stone-900 border border-stone-700 text-stone-200 text-xs rounded-xl px-3 py-2 focus:outline-none focus:border-emerald-500 w-full">
+            </div>
+        
+            <!-- Keyword Search Bar -->
+            <div class="flex items-center space-x-2 flex-1">
+                <span class="text-xs text-stone-400 font-bold uppercase tracking-wider shrink-0">Search:</span>
+                <input type="text" id="messageSearchInput" oninput="filterMessagesLocally()"
+                    placeholder="Type keyword (e.g. product name)..."
+                    class="bg-stone-900 border border-stone-700 text-stone-200 text-xs rounded-xl px-3 py-2 focus:outline-none focus:border-emerald-500 w-full">
+            </div>
+        
+            <!-- Reset Button -->
+            <button onclick="clearAllFilters()"
+                class="bg-stone-800 hover:bg-stone-700 text-stone-300 text-xs font-bold px-4 py-2 rounded-xl border border-stone-700 transition-colors text-center shrink-0">
+                Reset All
+            </button>
+        </div>
+
+        <!-- Messages Container List -->
+        <div class="bg-stone-950 rounded-2xl border border-stone-800 shadow-xl overflow-hidden">
+            <div class="divide-y divide-stone-800/50" id="messages-list">
+                <div class="p-12 text-center text-stone-500 font-medium">Loading system messages...</div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        function toggleMobileMenu() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('-translate-x-full');
+        }
+
+        let allLogs = []; // Global cache to hold fetched logs for instant searching
+
+            async function loadMessages() {
+                const selectedDate = document.getElementById('messageDateFilter').value;
+                let url = '/api/messages';
+
+                if (selectedDate) {
+                    url += `?date=${selectedDate}`;
+                }
+
+                try {
+                    const res = await fetch(url);
+                    allLogs = await res.json(); // Save fetched logs into memory
+
+                    // Run initial render using current search input value if any text is typed
+                    filterMessagesLocally();
+                } catch (err) {
+                    console.error("Failed to load messages:", err);
+                    document.getElementById('messages-list').innerHTML = `<div class="p-12 text-center text-rose-500 font-medium">Failed to load system messages.</div>`;
+                }
+            }
+
+            // Instant local filtering as you type in the search box
+            function filterMessagesLocally() {
+                const searchTerm = document.getElementById('messageSearchInput').value.toLowerCase();
+                const container = document.getElementById('messages-list');
+
+                // Filter the cached logs by description or action type
+                const filteredLogs = allLogs.filter(log => {
+                    const desc = (log.description || '').toLowerCase();
+                    const type = (log.action_type || '').toLowerCase();
+                    return desc.includes(searchTerm) || type.includes(searchTerm);
+                });
+
+                if (!filteredLogs || filteredLogs.length === 0) {
+                    container.innerHTML = `<div class="p-12 text-center text-stone-500 font-medium">No matching system messages found.</div>`;
+                    return;
+                }
+
+                container.innerHTML = filteredLogs.map(log => {
+                    let icon = '🔔';
+                    let badgeClass = 'bg-stone-900 border-stone-800 text-stone-400';
+                    let iconBoxClass = 'bg-stone-900 border-stone-800 text-stone-300';
+
+                    if (log.action_type && log.action_type.includes('DELETE')) {
+                        icon = '🗑️';
+                        badgeClass = 'bg-rose-950/50 border-rose-900/50 text-rose-400';
+                        iconBoxClass = 'bg-rose-950/50 border-rose-900/50 text-rose-400';
+                    } else if (log.action_type === 'LOW_STOCK') {
+                        icon = '⚠️';
+                        badgeClass = 'bg-amber-950/50 border-amber-900/50 text-amber-400';
+                        iconBoxClass = 'bg-amber-950/50 border-amber-900/50 text-amber-400';
+                    } else if (log.action_type === 'STOCK_UPDATE') {
+                        icon = '🔄';
+                        badgeClass = 'bg-blue-950/50 border-blue-900/50 text-blue-400';
+                        iconBoxClass = 'bg-blue-950/50 border-blue-900/50 text-blue-400';
+                    }
+
+                    return `
+            <div class="p-4 md:p-5 flex items-start justify-between gap-4 hover:bg-stone-900/30 transition-colors">
+                <div class="flex items-start space-x-3">
+                    <div class="border p-2 rounded-xl text-sm shrink-0 ${iconBoxClass}">${icon}</div>
+                    <div>
+                        <p class="text-sm font-bold text-white leading-snug">${log.description}</p>
+                        <span class="text-[10px] font-mono text-stone-500 mt-1 inline-block">${new Date(log.created_at).toLocaleString()}</span>
+                    </div>
+                </div>
+                <span class="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-lg border shrink-0 ${badgeClass}">${log.action_type}</span>
+            </div>
+        `;
+                }).join('');
+            }
+
+            function clearAllFilters() {
+                document.getElementById('messageDateFilter').value = '';
+                document.getElementById('messageSearchInput').value = '';
+                loadMessages();
+            }
+
+        // Live clock timer
+        setInterval(() => {
+            const el = document.getElementById('live-clock');
+            if (el) el.innerText = new Date().toLocaleTimeString();
+        }, 1000);
+
+        // Logout handler
+        document.getElementById('logoutBtn').addEventListener('click', async () => {
+            try {
+                const response = await fetch('/api/logout', { method: 'POST' });
+                const result = await response.json();
+                if (result.success) {
+                    window.location.href = '/login';
+                } else {
+                    alert('Logout failed!');
+                }
+            } catch (err) {
+                console.error('Logout error:', err);
+            }
+        });
+
+        // Highlight active navbar link & load data on startup
+        window.addEventListener('DOMContentLoaded', () => {
+            const currentPath = window.location.pathname;
+            const navLinks = document.querySelectorAll('aside nav a');
+
+            navLinks.forEach(link => {
+                const href = link.getAttribute('href');
+                const isActive = href === '/' ? currentPath === '/' || currentPath === '' : currentPath.endsWith(href);
+
+                if (isActive) {
+                    link.className = "flex items-center space-x-3 px-4 py-3 rounded-xl font-bold text-sm transition-all bg-emerald-900 text-white shadow-sm ring-1 ring-white/5";
+                } else {
+                    link.className = "flex items-center space-x-3 px-4 py-3 rounded-xl font-bold text-sm transition-all text-emerald-400/80 hover:bg-emerald-900/50 hover:text-emerald-200";
+                }
+            });
+            // Explicitly clear the date filter on fresh load so it shows all recent logs
+            document.getElementById('messageDateFilter').value = '';
+
+            loadMessages();
+        });
+
+        // Check user role for admin elements
+        window.addEventListener('DOMContentLoaded', () => {
+            fetch('/api/current-user')
+                .then(response => response.json())
+                .then(data => {
+                    if (data && data.role !== 'admin') {
+                        const adminElements = document.querySelectorAll('[data-admin-only]');
+                        adminElements.forEach(el => {
+                            el.style.display = 'none';
+                        });
+                    }
+                })
+                .catch(err => console.error('Failed to load user session info:', err));
+        });
+    </script>
+</body>
+
+</html>

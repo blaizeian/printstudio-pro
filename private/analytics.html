@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PrintStudio Pro - Analytics</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js for graphing -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body class="bg-stone-900 text-stone-100 font-sans min-h-dvh flex flex-col md:flex-row antialiased">
+
+    <!-- Mobile Header Bar (Only visible on phones) -->
+    <header
+        class="md:hidden flex items-center justify-between bg-emerald-950 text-emerald-300 p-4 border-b border-emerald-900 sticky top-0 z-30">
+        <div class="flex items-center space-x-3">
+            <div class="bg-emerald-600 p-2 rounded-xl text-lg font-black text-white shadow-lg">🖨️</div>
+            <h1 class="text-sm font-black text-white tracking-wider uppercase">PrintStudio</h1>
+        </div>
+        <button onclick="toggleMobileMenu()" class="bg-emerald-900/50 p-2 rounded-xl text-white focus:outline-none">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+            </svg>
+        </button>
+    </header>
+ 
+    <!-- GREEN SIDEBAR NAVIGATION PANEL (Consistent Layout) -->
+    <!-- GREEN SIDEBAR NAVIGATION PANEL -->
+    <!-- GREEN SIDEBAR NAVIGATION PANEL (Sticky Desktop + Mobile Drawer) -->
+    <aside id="sidebar"
+        class="fixed inset-y-0 left-0 z-40 w-64 bg-emerald-950 h-screen text-emerald-300 p-4 flex flex-col justify-between border-r border-emerald-900 shadow-2xl transform -translate-x-full md:translate-x-0 md:sticky md:top-0 transition-transform duration-300 shrink-0">
+    
+        <!-- Top Section: Logo & Nav Wrapper -->
+        <div class="flex flex-col space-y-4 flex-1 overflow-hidden">
+            <!-- Logo Header -->
+            <div class="flex items-center justify-between shrink-0 px-2">
+                <div class="flex items-center space-x-3">
+                    <div class="bg-emerald-600 p-2 rounded-xl text-lg font-black text-white shadow-lg">🖨️</div>
+                    <div>
+                        <h1 class="text-sm font-black text-white tracking-wider uppercase">PrintStudio</h1>
+                        <p class="text-[10px] text-emerald-400 font-bold tracking-widest">PRO SYSTEM</p>
+                    </div>
+                </div>
+                <!-- Close button for mobile drawer -->
+                <button onclick="toggleMobileMenu()"
+                    class="md:hidden text-emerald-400 hover:text-white p-1 text-lg font-bold">
+                    ✕
+                </button>
+            </div>
+    
+            <!-- Scrollable Navigation Area -->
+            <nav class="flex flex-col space-y-1 overflow-y-auto flex-1 pr-1" id="sidebar-nav">
+                <a href="/"
+                    class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl font-bold text-sm transition-all text-emerald-400/80 hover:bg-emerald-900/50 hover:text-emerald-200">
+                    <span>🖥️</span><span>Terminal</span>
+                </a>
+                <a href="/history" data-vendor-exclude
+                    class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl font-bold text-sm transition-all text-emerald-400/80 hover:bg-emerald-900/50 hover:text-emerald-200">
+                    <span>📊</span><span>Archive</span>
+                </a>
+                <a href="/analytics" data-admin-only
+                    class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl font-bold text-sm transition-all text-emerald-400/80 hover:bg-emerald-900/50 hover:text-emerald-200">
+                    <span>📈</span><span>Analytics</span>
+                </a>
+                <a href="/inventory" data-admin-only
+                    class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl font-bold text-sm transition-all text-emerald-400/80 hover:bg-emerald-900/50 hover:text-emerald-200">
+                    <span>📦</span><span>Catalog</span>
+                </a>
+                <a href="/reports" data-admin-only
+                    class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl font-bold text-sm transition-all text-emerald-400/80 hover:bg-emerald-900/50 hover:text-emerald-200">
+                    <span>📄</span><span>reports</span>
+                </a>
+                <a href="/cashiers" data-admin-only
+                    class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl font-bold text-sm transition-all text-emerald-400/80 hover:bg-emerald-900/50 hover:text-emerald-200">
+                    <span>👥</span><span>Cashiers</span>
+                </a>
+                
+                <a href="/loans" data-admin-only
+                    class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl font-bold text-sm transition-all text-emerald-400/80 hover:bg-emerald-900/50 hover:text-emerald-200">
+                    <span>💳</span><span>Loans Ledger</span>
+                </a>
+                <a href="/messages" data-admin-only
+                    class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl font-bold text-sm transition-all text-emerald-400/80 hover:bg-emerald-900/50 hover:text-emerald-200">
+                    <span>💬</span><span>Messages</span>
+                </a>
+                <a href="/account"
+                    class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl font-bold text-sm transition-all text-emerald-400/80 hover:bg-emerald-900/50 hover:text-emerald-200">
+                    <span>⚙️</span><span>Settings</span>
+                </a>
+            </nav>
+        </div>
+    
+        <!-- Bottom Section: Logout & Operator Info -->
+        <div class="space-y-3 shrink-0 pt-3 border-t border-emerald-900">
+            <div>
+                <button id="logoutBtn"
+                    class="flex items-center space-x-3 px-3.5 py-2.5 w-full text-red-400 hover:bg-red-900/20 rounded-xl font-bold text-sm transition-all">
+                    <span>🚪</span><span>Logout</span>
+                </button>
+            </div>
+            <div class="flex items-center space-x-3 px-2">
+                <div
+                    class="w-8 h-8 rounded-full bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-xs font-black text-emerald-400">
+                    OP</div>
+                <div>
+                    <p id="operatorName" class="text-xs font-bold text-white leading-tight">main counter</p>
+                    <span id="live-clock" class="text-[10px] font-mono font-medium text-emerald-600">00:00:00 AM</span>
+                </div>
+            </div>
+        </div>
+    </aside>
+    <!-- CORE INTERFACE AREA -->
+    <!-- CORE INTERFACE AREA -->
+    <main class="flex-1 p-6 md:p-8 overflow-y-auto">
+        <div class="mb-8 flex flex-col gap-6">
+            <!-- Title & Description -->
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div>
+                    <h2 class="text-2xl font-black text-white tracking-tight">Performance Analytics</h2>
+                    <p class="text-xs text-stone-400 mt-1">Real-time revenue monitoring and sales trend analysis.</p>
+                </div>
+            </div>
+    
+            <!-- Filter Bar -->
+            <div class="flex flex-wrap gap-3 items-center bg-stone-950 p-4 rounded-2xl border border-stone-800 shadow-xl">
+                <!-- 1. Selection Mode -->
+                <!-- 1. Selection Mode -->
+                <select id="filter-type"
+                    class="bg-stone-800 text-stone-200 text-xs font-bold px-4 py-2.5 rounded-xl border border-stone-700 cursor-pointer">
+                    <option value="daily">Daily</option>
+                    <option value="weekly">Weekly </option>
+                    <option value="monthly">Monthly </option>
+                    <option value="yearly">Yearly </option> <!-- ADD THIS LINE -->
+                </select>
+    
+                <!-- 2. Date Inputs -->
+                <!-- Mobile-Responsive Date Filter Range -->
+                <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+                    <input type="date" id="date-start"
+                        class="bg-stone-800 text-stone-200 text-xs font-bold px-3 py-2.5 rounded-xl border border-stone-700 outline-none focus:border-emerald-600 w-full sm:w-auto">
+                
+                    <span class="text-stone-500 text-xs font-bold text-center sm:text-left py-1 sm:py-0">to</span>
+                
+                    <input type="date" id="date-end"
+                        class="bg-stone-800 text-stone-200 text-xs font-bold px-3 py-2.5 rounded-xl border border-stone-700 outline-none focus:border-emerald-600 w-full sm:w-auto">
+                </div>
+    
+                <!-- 3. Action Button -->
+                <button id="apply-btn" onclick="loadAnalytics()"
+                    class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-6 py-2.5 rounded-xl transition-all shadow-lg shadow-emerald-900/20">
+                    Apply Filter
+                </button>
+            </div>
+        </div>
+    
+        <!-- KPI Cards & Graph stay below this... -->
+
+        <!-- KPI Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="bg-stone-950 p-6 rounded-2xl border border-stone-800 shadow-xl">
+                <p class="text-xs text-stone-500 font-bold uppercase tracking-wider">Total Revenue</p>
+                <p id="stat-revenue" class="text-3xl font-black text-emerald-400 mt-2">ksh0.00</p>
+            </div>
+            <div class="bg-stone-950 p-6 rounded-2xl border border-stone-800 shadow-xl">
+                <p class="text-xs text-stone-500 font-bold uppercase tracking-wider">Transactions</p>
+                <p id="stat-orders" class="text-3xl font-black text-white mt-2">0</p>
+            </div>
+            <div class="bg-stone-950 p-6 rounded-2xl border border-stone-800 shadow-xl">
+                <p class="text-xs text-stone-500 font-bold uppercase tracking-wider">Avg. Order Value</p>
+                <p id="stat-aov" class="text-3xl font-black text-blue-400 mt-2">ksh0.00</p>
+            </div>
+        </div>
+
+        <!-- Graph Section -->
+        <div class="bg-stone-950 p-6 rounded-2xl border border-stone-800 shadow-xl">
+            <canvas id="salesChart" class="w-full h-64"></canvas>
+        </div>
+    </main>
+
+    <script>
+
+        function toggleMobileMenu() {
+                const sidebar = document.getElementById('sidebar');
+                sidebar.classList.toggle('-translate-x-full');
+            }
+
+        
+        let myChart;
+
+        async function loadAnalytics() {
+
+            console.log("RUNNING: HTML inline script");
+
+
+            const btn = document.getElementById('apply-btn');
+
+            // 1. Visual Feedback: Change color and text while loading
+           if (btn) {
+                btn.innerText = 'Loading...';
+                btn.className = 'bg-stone-600 text-white text-xs font-bold px-6 py-2.5 rounded-xl transition-all';
+            }
+
+            await new Promise(resolve => setTimeout(resolve, 500));
+            // 1. Get elements safely (these match your new HTML IDs)
+            const type = document.getElementById('filter-type').value;
+            const start = document.getElementById('date-start').value;
+            const end = document.getElementById('date-end').value;
+
+            try {
+                // 2. Build the URL dynamically
+                // This matches the logic we put in your server.js
+                let url = `/api/analytics?type=${type}&start=${start}&end=${end}`;
+
+                const response = await fetch(url);
+                const data = await response.json();
+
+                if (data.success) {
+                    // Update Stats
+                    const rev = data.stats.totalRevenue || 0;
+                    const ord = data.stats.totalOrders || 0;
+
+                    document.getElementById('stat-revenue').innerText = `ksh${parseFloat(rev).toLocaleString(undefined, { minimumFractionDigits: 2 })}`;
+                    document.getElementById('stat-orders').innerText = ord;
+                    document.getElementById('stat-aov').innerText = `ksh${(ord > 0 ? rev / ord : 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}`;
+
+                    // Render Chart
+                    const ctx = document.getElementById('salesChart').getContext('2d');
+                    if (myChart) myChart.destroy();
+
+                    myChart = new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: data.chartData.map(d => d.label),
+                            datasets: [{
+                                label: 'Revenue ($)',
+                                data: data.chartData.map(d => d.total),
+                                borderColor: '#10b981',
+                                backgroundColor: 'rgba(16, 185, 129, 0.2)',
+                                fill: true,
+                                tension: 0.4,
+                                pointRadius: 4,
+                                pointBackgroundColor: '#fff'
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            scales: {
+                                y: { beginAtZero: true, ticks: { callback: value => 'ksh' + value } }
+                            },
+                            plugins: { legend: { display: false } }
+                        }
+                    });
+                }
+            } catch (err) {
+                console.error("Analytics sync error:", err);
+            } finally {
+                // 2. Reset Button: Change back to emerald
+               if (btn) {
+                    btn.innerText = 'Apply Filter';
+                    btn.className = 'bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-6 py-2.5 rounded-xl transition-all shadow-lg shadow-emerald-900/20';
+                }
+            }
+
+        }
+
+        // Live Clock
+        setInterval(() => {
+            const el = document.getElementById('live-clock');
+            if (el) el.innerText = new Date().toLocaleTimeString();
+        }, 1000);
+
+        // Initial Load - Set defaults and load data
+        document.addEventListener('DOMContentLoaded', async () => {
+                // 1. Fetch the first sale date from the server
+                try {
+                    const response = await fetch('/api/first-sale-date');
+                    const data = await response.json();
+
+                    // 2. Set the 'min' attribute on your inputs
+                    const startDateInput = document.getElementById('date-start');
+                    const endDateInput = document.getElementById('date-end');
+
+                    if (startDateInput && data.minDate) {
+                        startDateInput.min = data.minDate;
+                    }
+                    if (endDateInput && data.minDate) {
+                        endDateInput.min = data.minDate;
+                    }
+                } catch (err) {
+                    console.error("Could not set date limits:", err);
+                }
+
+                // 3. Set default to today
+                const today = new Date().toISOString().split('T')[0];
+                const s = document.getElementById('date-start');
+                const e = document.getElementById('date-end');
+                if (s && !s.value) s.value = today;
+                if (e && !e.value) e.value = today;
+
+                // Add this inside your DOMContentLoaded event
+            const startDateInput = document.getElementById('date-start');
+
+            // Listen for any changes
+            startDateInput.addEventListener('change', function () {
+                const minDate = this.getAttribute('min');
+                if (minDate && this.value < minDate) {
+                    alert("You haven't made any sales before " + minDate);
+                    this.value = minDate; // Force the date to the valid start date
+                }
+            });
+
+                loadAnalytics();
+            });
+        document.getElementById('logoutBtn').addEventListener('click', async () => {
+                try {
+                    const response = await fetch('/api/logout', { method: 'POST' });
+                    const result = await response.json();
+
+                    if (result.success) {
+                        // Force redirect to login page
+                        window.location.href = '/login';
+                    } else {
+                        alert('Logout failed!');
+                    }
+                } catch (err) {
+                    console.error('Logout error:', err);
+                    alert('Something went wrong during logout.');
+                }
+            });
+
+        window.addEventListener('DOMContentLoaded', () => {
+                const currentPath = window.location.pathname;
+                const navLinks = document.querySelectorAll('aside nav a');
+
+                navLinks.forEach(link => {
+                    const href = link.getAttribute('href');
+                    const isActive = href === '/'
+                        ? currentPath === '/' || currentPath === ''
+                        : currentPath.endsWith(href);
+
+                    if (isActive) {
+                        link.className = "flex items-center space-x-3 px-4 py-3 rounded-xl font-bold text-sm transition-all bg-emerald-900 text-white shadow-sm ring-1 ring-white/5";
+                    } else {
+                        link.className = "flex items-center space-x-3 px-4 py-3 rounded-xl font-bold text-sm transition-all text-emerald-400/80 hover:bg-emerald-900/50 hover:text-emerald-200";
+                    }
+                });
+            });
+
+        window.addEventListener('DOMContentLoaded', () => {
+                fetch('/api/current-user')
+                    .then(response => response.json())
+                    .then(data => {
+                        // If the user is NOT an admin (i.e., they are a cashier or vendor), hide admin elements
+                        if (data && data.role !== 'admin') {
+                            const adminElements = document.querySelectorAll('[data-admin-only]');
+                            adminElements.forEach(el => {
+                                el.style.display = 'none';
+                            });
+                        }
+                    })
+                    .catch(err => console.error('Failed to load user session info:', err));
+            });
+
+        // Automatically update date inputs when switching filter types
+           document.getElementById('filter-type').addEventListener('change', function () {
+                const type = this.value;
+                const today = new Date();
+                const yyyy = today.getFullYear();
+                const mm = String(today.getMonth() + 1).padStart(2, '0');
+                const dd = String(today.getDate()).padStart(2, '0');
+                const todayStr = `${yyyy}-${mm}-${dd}`;
+
+                const startDateInput = document.getElementById('date-start');
+                const endDateInput = document.getElementById('date-end');
+
+                if (type === 'daily') {
+                    startDateInput.value = todayStr;
+                    endDateInput.value = todayStr;
+                } else if (type === 'weekly') {
+                    const startOfWeek = new Date(today);
+                    startOfWeek.setDate(today.getDate() - 6);
+                    startDateInput.value = startOfWeek.toISOString().split('T')[0];
+                    endDateInput.value = todayStr;
+                } else if (type === 'monthly') {
+                    const startOfMonth = `${yyyy}-${mm}-01`;
+                    startDateInput.value = startOfMonth;
+                    endDateInput.value = todayStr;
+                } else if (type === 'yearly') { // ADD THIS BLOCK
+                    startDateInput.value = `${yyyy}-01-01`;
+                    endDateInput.value = `${yyyy}-12-31`;
+                }
+
+                loadAnalytics();
+            });
+    </script>
+</body>
+
+</html>

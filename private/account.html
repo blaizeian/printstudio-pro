@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account & Settings - PrintStudio Pro</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-stone-900 text-stone-100 font-sans min-h-dvh flex flex-col md:flex-row antialiased">
+
+    <!-- Mobile Header Bar (Only visible on phones) -->
+    <header
+        class="md:hidden flex items-center justify-between bg-emerald-950 text-emerald-300 p-4 border-b border-emerald-900 sticky top-0 z-30">
+        <div class="flex items-center space-x-3">
+            <div class="bg-emerald-600 p-2 rounded-xl text-lg font-black text-white shadow-lg">🖨️</div>
+            <h1 class="text-sm font-black text-white tracking-wider uppercase">PrintStudio</h1>
+        </div>
+        <button onclick="toggleMobileMenu()" class="bg-emerald-900/50 p-2 rounded-xl text-white focus:outline-none">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16">
+                </path>
+            </svg>
+        </button>
+    </header>
+
+    <!-- GREEN SIDEBAR NAVIGATION PANEL -->
+    <aside id="sidebar"
+        class="fixed inset-y-0 left-0 z-40 w-64 bg-emerald-950 h-screen text-emerald-300 p-6 flex flex-col justify-between border-r border-emerald-900 shadow-2xl transform -translate-x-full md:translate-x-0 md:sticky md:top-0 transition-transform duration-300 shrink-0">
+    
+        <!-- Top Section: Logo & Links Wrapper (flex-1 and overflow-hidden prevent height explosion) -->
+        <div class="flex flex-col space-y-6 flex-1 overflow-hidden">
+            <div class="flex items-center justify-between shrink-0">
+                <div class="flex items-center space-x-3 px-2">
+                    <div class="bg-emerald-600 p-2 rounded-xl text-lg font-black text-white shadow-lg">🖨️</div>
+                    <div>
+                        <h1 class="text-sm font-black text-white tracking-wider uppercase">PrintStudio</h1>
+                        <p class="text-[10px] text-emerald-400 font-bold tracking-widest">PRO SYSTEM</p>
+                    </div>
+                </div>
+                <!-- Close button for mobile drawer -->
+                <button onclick="toggleMobileMenu()"
+                    class="md:hidden text-emerald-400 hover:text-white p-1 text-lg font-bold">
+                    ✕
+                </button>
+            </div>
+    
+            <!-- Scrollable Nav Area -->
+            <nav class="flex flex-col space-y-1.5 overflow-y-auto flex-1 pr-1" id="sidebar-nav">
+                <a href="/"
+                    class="flex items-center space-x-3 px-4 py-3 rounded-xl font-bold text-sm transition-all text-emerald-400/80 hover:bg-emerald-900/50 hover:text-emerald-200">
+                    <span>🖥️</span><span>Terminal</span>
+                </a>
+                <a href="/history" data-vendor-exclude
+                    class="flex items-center space-x-3 px-4 py-3 rounded-xl font-bold text-sm transition-all text-emerald-400/80 hover:bg-emerald-900/50 hover:text-emerald-200">
+                    <span>📊</span><span>Archive</span>
+                </a>
+                <a href="/analytics" data-admin-only
+                    class="flex items-center space-x-3 px-4 py-3 rounded-xl font-bold text-sm transition-all text-emerald-400/80 hover:bg-emerald-900/50 hover:text-emerald-200">
+                    <span>📈</span><span>Analytics</span>
+                </a>
+                <a href="/inventory" data-admin-only
+                    class="flex items-center space-x-3 px-4 py-3 rounded-xl font-bold text-sm transition-all text-emerald-400/80 hover:bg-emerald-900/50 hover:text-emerald-200">
+                    <span>📦</span><span>Catalog</span>
+                </a>
+                <a href="/reports" data-admin-only
+                    class="flex items-center space-x-3 px-4 py-3 rounded-xl font-bold text-sm transition-all text-emerald-400/80 hover:bg-emerald-900/50 hover:text-emerald-200">
+                    <span>📄</span><span>reports</span>
+                </a>
+                <a href="/cashiers" data-admin-only
+                    class="flex items-center space-x-3 px-4 py-3 rounded-xl font-bold text-sm transition-all text-emerald-400/80 hover:bg-emerald-900/50 hover:text-emerald-200">
+                    <span>👥</span><span>Cashiers</span>
+                </a>
+                
+                <a href="/loans" data-admin-only
+                    class="flex items-center space-x-3 px-4 py-3 rounded-xl font-bold text-sm transition-all text-emerald-400/80 hover:bg-emerald-900/50 hover:text-emerald-200">
+                    <span>💳</span><span>Loans Ledger</span>
+                </a>
+                <a href="/messages" data-admin-only
+                    class="flex items-center space-x-3 px-4 py-3 rounded-xl font-bold text-sm transition-all text-emerald-400/80 hover:bg-emerald-900/50 hover:text-emerald-200">
+                    <span>💬</span><span>Messages</span>
+                </a>
+                <a href="/account"
+                    class="flex items-center space-x-3 px-4 py-3 rounded-xl font-bold text-sm transition-all text-emerald-400/80 hover:bg-emerald-900/50 hover:text-emerald-200">
+                    <span>⚙️</span><span>Settings</span>
+                </a>
+            </nav>
+        </div>
+    
+        <!-- Bottom Section: Logout & Operator Info (shrink-0 ensures it never squishes) -->
+        <div class="space-y-4 shrink-0 pt-4">
+            <div class="border-t border-emerald-900 pt-4">
+                <button id="logoutBtn"
+                    class="flex items-center space-x-3 px-4 py-3 w-full text-red-400 hover:bg-red-900/20 rounded-xl font-bold text-sm transition-all">
+                    <span>🚪</span><span>Logout</span>
+                </button>
+            </div>
+            <div class="border-t border-emerald-900 pt-4 flex items-center space-x-3 px-2">
+                <div
+                    class="w-8 h-8 rounded-full bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-xs font-black text-emerald-400">
+                    OP</div>
+                <div>
+                    <p id="operatorName" class="text-xs font-bold text-white leading-tight">Loading...</p>
+                    <span id="live-clock" class="text-[10px] font-mono font-medium text-emerald-600">00:00:00 AM</span>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 p-4 md:p-8 overflow-y-auto">
+        <div class="max-w-3xl mx-auto space-y-6">
+            <!-- Page Header -->
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-stone-800 pb-4">
+                <div>
+                    <h2 class="text-xl font-black text-white tracking-tight">Account Settings</h2>
+                    <p class="text-xs text-stone-400">Manage your profile credentials and security.</p>
+                </div>
+            </div>
+
+            <!-- SECTION: Personal Credentials -->
+            <div class="bg-stone-950 p-5 md:p-6 rounded-2xl border border-stone-800 shadow-xl space-y-5">
+                <div>
+                    <h3 class="text-sm font-black text-white uppercase tracking-wider">My Profile</h3>
+                    <p class="text-xs text-stone-400">Your system username and security credentials.</p>
+                </div>
+
+                <!-- Username Form / Display -->
+                <form onsubmit="updateUsername(event)" class="space-y-3">
+                    <div class="space-y-1.5">
+                        <label class="block text-xs text-stone-400 font-bold uppercase tracking-wider">Username</label>
+                        <input type="text" id="accountUsername" disabled
+                            class="bg-stone-900/50 border border-stone-800 text-stone-500 text-xs rounded-xl px-3.5 py-2.5 w-full cursor-not-allowed transition-colors">
+                        <span id="usernameHint" class="text-[10px] text-stone-500 block">Usernames are fixed for
+                            tracking audit logs and transactions.</span>
+                    </div>
+                    <button type="submit" id="updateUsernameBtn"
+                        class="hidden w-full sm:w-auto bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold px-5 py-2.5 rounded-xl transition-colors shadow-lg shadow-blue-950/50">
+                        Update Username
+                    </button>
+                </form>
+
+                <!-- Password Change Form -->
+                <form onsubmit="changePassword(event)" class="space-y-4 pt-4 border-t border-stone-900">
+                    <h4 class="text-xs font-bold text-stone-300 uppercase tracking-wider">Change Password</h4>
+
+                    <div class="space-y-1.5">
+                        <label class="block text-xs text-stone-400 font-bold uppercase tracking-wider">Current
+                            Password</label>
+                        <input type="password" id="currentPassword" required placeholder="••••••••"
+                            class="bg-stone-900 border border-stone-700 text-stone-200 text-xs rounded-xl px-3.5 py-2.5 w-full focus:outline-none focus:border-emerald-500 transition-colors">
+                    </div>
+
+                    <div class="space-y-1.5">
+                        <label class="block text-xs text-stone-400 font-bold uppercase tracking-wider">New
+                            Password</label>
+                        <input type="password" id="newPassword" required placeholder="••••••••"
+                            class="bg-stone-900 border border-stone-700 text-stone-200 text-xs rounded-xl px-3.5 py-2.5 w-full focus:outline-none focus:border-emerald-500 transition-colors">
+                    </div>
+
+                    <button type="submit"
+                        class="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold px-5 py-2.5 rounded-xl transition-colors shadow-lg shadow-emerald-950/50">
+                        Update Password
+                    </button>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <!-- Frontend Script Logic -->
+    <script>
+        // Toggle mobile sidebar drawer
+        function toggleMobileMenu() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('-translate-x-full');
+        }
+
+        // Live Clock Script
+        function updateClock() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString();
+            const clockEl = document.getElementById('live-clock');
+            if (clockEl) clockEl.textContent = timeString;
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        // Page Load Data Initialization & Role Check
+        window.addEventListener('DOMContentLoaded', async () => {
+            try {
+                const res = await fetch('/api/account-info');
+                if (!res.ok) throw new Error("Unauthorized");
+
+                const data = await res.json();
+                const usernameInput = document.getElementById('accountUsername');
+
+                // Populate username and operator footer
+                usernameInput.value = data.user.username;
+                document.getElementById('operatorName').textContent = data.user.username;
+
+                // Handle Role-Based Visibility (Case-insensitive & trimmed)
+                const role = (data.user.role || '').trim().toLowerCase();
+
+                if (role === 'vendor') {
+                    document.querySelectorAll('[data-admin-only]').forEach(el => el.classList.add('hidden'));
+                    document.querySelectorAll('[data-vendor-exclude]').forEach(el => el.classList.add('hidden'));
+                    const vendorLink = document.getElementById('vendorSalesNavLink');
+                    if (vendorLink) vendorLink.classList.remove('hidden');
+                } else if (role === 'cashier') {
+                    document.querySelectorAll('[data-admin-only]').forEach(el => el.classList.add('hidden'));
+                }
+
+                // If user is admin, unlock username editing
+                if (role === 'admin') {
+                    usernameInput.removeAttribute('disabled');
+                    usernameInput.classList.remove('bg-stone-900/50', 'cursor-not-allowed', 'text-stone-500');
+                    usernameInput.classList.add('bg-stone-900', 'border-stone-700', 'text-stone-200', 'focus:outline-none', 'focus:border-emerald-500');
+
+                    document.getElementById('updateUsernameBtn').classList.remove('hidden');
+                    document.getElementById('usernameHint').textContent = "Admins can update their system username.";
+                }
+            } catch (err) {
+                console.error("Failed to load settings data:", err);
+            }
+        });
+
+        // Logout Event Listener
+        document.getElementById('logoutBtn').addEventListener('click', async () => {
+            try {
+                const res = await fetch('/api/logout', { method: 'POST' });
+                if (res.ok) {
+                    window.location.href = '/login';
+                } else {
+                    alert('Logout failed.');
+                }
+            } catch (err) {
+                console.error('Logout error:', err);
+            }
+        });
+
+        async function updateUsername(e) {
+            e.preventDefault();
+            const username = document.getElementById('accountUsername').value;
+
+            try {
+                const res = await fetch('/api/account/profile', {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username })
+                });
+
+                const result = await res.json();
+                alert(result.message);
+                if (result.success) {
+                    document.getElementById('operatorName').textContent = username;
+                }
+            } catch (err) {
+                console.error("Username update error:", err);
+                alert("Failed to update username.");
+            }
+        }
+
+        async function changePassword(e) {
+            e.preventDefault();
+            const currentPassword = document.getElementById('currentPassword').value;
+            const newPassword = document.getElementById('newPassword').value;
+
+            try {
+                const res = await fetch('/api/account/password', {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ currentPassword, newPassword })
+                });
+
+                const result = await res.json();
+                alert(result.message);
+
+                if (result.success) {
+                    document.getElementById('currentPassword').value = '';
+                    document.getElementById('newPassword').value = '';
+                }
+            } catch (err) {
+                console.error("Password update error:", err);
+                alert("Failed to update password.");
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+                const currentPath = window.location.pathname;
+                const navLinks = document.querySelectorAll('aside nav a');
+
+                navLinks.forEach(link => {
+                    const href = link.getAttribute('href');
+                    const isActive = href === '/' ? currentPath === '/' || currentPath === '' : currentPath.endsWith(href);
+
+                    if (isActive) {
+                        link.className = "flex items-center space-x-3 px-4 py-3 rounded-xl font-bold text-sm transition-all bg-emerald-900 text-white shadow-sm ring-1 ring-white/5";
+                    } else {
+                        link.className = "flex items-center space-x-3 px-4 py-3 rounded-xl font-bold text-sm transition-all text-emerald-400/80 hover:bg-emerald-900/50 hover:text-emerald-200";
+                    }
+                });
+                // Explicitly clear the date filter on fresh load so it shows all recent logs
+                document.getElementById('messageDateFilter').value = '';
+
+                loadMessages();
+            });
+    </script>
+</body>
+
+</html>

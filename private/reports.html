@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PrintStudio Pro - Financial Reports</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @media print {
+
+            aside,
+            .no-print {
+                display: none !important;
+            }
+
+            main {
+                padding: 0 !important;
+                width: 100% !important;
+                background: white !important;
+            }
+
+            body {
+                background: white !important;
+                color: black !important;
+            }
+
+            table {
+                color: black !important;
+                border: 1px solid #ccc !important;
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-stone-900 text-stone-100 font-sans min-h-dvh flex flex-col md:flex-row antialiased">
+
+    <!-- Mobile Header Bar (Only visible on phones) -->
+    <header
+        class="md:hidden flex items-center justify-between bg-emerald-950 text-emerald-300 p-4 border-b border-emerald-900 sticky top-0 z-30">
+        <div class="flex items-center space-x-3">
+            <div class="bg-emerald-600 p-2 rounded-xl text-lg font-black text-white shadow-lg">🖨️</div>
+            <h1 class="text-sm font-black text-white tracking-wider uppercase">PrintStudio</h1>
+        </div>
+        <button onclick="toggleMobileMenu()" class="bg-emerald-900/50 p-2 rounded-xl text-white focus:outline-none">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+            </svg>
+        </button>
+    </header>
+
+    <!-- GREEN SIDEBAR -->
+    <!-- GREEN SIDEBAR NAVIGATION PANEL -->
+    <aside id="sidebar"
+        class="fixed inset-y-0 left-0 z-40 w-64 bg-emerald-950 h-screen text-emerald-300 p-4 flex flex-col justify-between border-r border-emerald-900 shadow-2xl transform -translate-x-full md:translate-x-0 md:sticky md:top-0 transition-transform duration-300 shrink-0">
+    
+        <!-- Top Section: Logo & Nav Wrapper -->
+        <div class="flex flex-col space-y-4 flex-1 overflow-hidden">
+            <!-- Logo Header -->
+            <div class="flex items-center justify-between shrink-0 px-2">
+                <div class="flex items-center space-x-3">
+                    <div class="bg-emerald-600 p-2 rounded-xl text-lg font-black text-white shadow-lg">🖨️</div>
+                    <div>
+                        <h1 class="text-sm font-black text-white tracking-wider uppercase">PrintStudio</h1>
+                        <p class="text-[10px] text-emerald-400 font-bold tracking-widest">PRO SYSTEM</p>
+                    </div>
+                </div>
+                <!-- Close button for mobile drawer -->
+                <button onclick="toggleMobileMenu()"
+                    class="md:hidden text-emerald-400 hover:text-white p-1 text-lg font-bold">
+                    ✕
+                </button>
+            </div>
+    
+            <!-- Scrollable Navigation Area -->
+            <nav class="flex flex-col space-y-1 overflow-y-auto flex-1 pr-1" id="sidebar-nav">
+                <a href="/"
+                    class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl font-bold text-sm transition-all text-emerald-400/80 hover:bg-emerald-900/50 hover:text-emerald-200">
+                    <span>🖥️</span><span>Terminal</span>
+                </a>
+                <a href="/history" data-vendor-exclude
+                    class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl font-bold text-sm transition-all text-emerald-400/80 hover:bg-emerald-900/50 hover:text-emerald-200">
+                    <span>📊</span><span>Archive</span>
+                </a>
+                <a href="/analytics" data-admin-only
+                    class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl font-bold text-sm transition-all text-emerald-400/80 hover:bg-emerald-900/50 hover:text-emerald-200">
+                    <span>📈</span><span>Analytics</span>
+                </a>
+                <a href="/inventory" data-admin-only
+                    class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl font-bold text-sm transition-all text-emerald-400/80 hover:bg-emerald-900/50 hover:text-emerald-200">
+                    <span>📦</span><span>Catalog</span>
+                </a>
+                <a href="/reports" data-admin-only
+                    class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl font-bold text-sm transition-all text-emerald-400/80 hover:bg-emerald-900/50 hover:text-emerald-200">
+                    <span>📄</span><span>reports</span>
+                </a>
+                <a href="/cashiers" data-admin-only
+                    class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl font-bold text-sm transition-all text-emerald-400/80 hover:bg-emerald-900/50 hover:text-emerald-200">
+                    <span>👥</span><span>Cashiers</span>
+                </a>
+               
+                <a href="/loans" data-admin-only
+                    class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl font-bold text-sm transition-all text-emerald-400/80 hover:bg-emerald-900/50 hover:text-emerald-200">
+                    <span>💳</span><span>Loans Ledger</span>
+                </a>
+                <a href="/messages" data-admin-only
+                    class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl font-bold text-sm transition-all text-emerald-400/80 hover:bg-emerald-900/50 hover:text-emerald-200">
+                    <span>💬</span><span>Messages</span>
+                </a>
+                <a href="/account"
+                    class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl font-bold text-sm transition-all text-emerald-400/80 hover:bg-emerald-900/50 hover:text-emerald-200">
+                    <span>⚙️</span><span>Settings</span>
+                </a>
+            </nav>
+        </div>
+    
+        <!-- Bottom Section: Logout & Operator Info -->
+        <div class="space-y-3 shrink-0 pt-3 border-t border-emerald-900">
+            <div>
+                <button id="logoutBtn"
+                    class="flex items-center space-x-3 px-3.5 py-2.5 w-full text-red-400 hover:bg-red-900/20 rounded-xl font-bold text-sm transition-all">
+                    <span>🚪</span><span>Logout</span>
+                </button>
+            </div>
+            <div class="flex items-center space-x-3 px-2">
+                <div
+                    class="w-8 h-8 rounded-full bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-xs font-black text-emerald-400">
+                    OP</div>
+                <div>
+                    <p id="operatorName" class="text-xs font-bold text-white leading-tight">main counter</p>
+                    <span id="live-clock" class="text-[10px] font-mono font-medium text-emerald-600">00:00:00 AM</span>
+                </div>
+            </div>
+        </div>
+    </aside>
+    <!-- CORE INTERFACE AREA -->
+    <main class="flex-1 p-6 md:p-8 overflow-y-auto">
+        <div class="mb-8 flex flex-col gap-6">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div>
+                    <h2 class="text-2xl font-black text-white tracking-tight">Financial Reports</h2>
+                    <p class="text-xs text-stone-400 mt-1">Generate and print professional financial statements.</p>
+                </div>
+                <button onclick="window.print()"
+                    class="no-print bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-6 py-2.5 rounded-xl transition-all shadow-lg shadow-emerald-900/20">
+                    Print Statement
+                </button>
+            </div>
+
+            <!-- View Switcher -->
+            <div
+                class="flex flex-wrap gap-3 items-center bg-stone-950 p-4 rounded-2xl border border-stone-800 shadow-xl">
+                <button id="daily-btn"
+                    class="bg-emerald-600 text-white font-bold px-4 py-2.5 rounded-xl shadow-lg transition-all">Daily
+                    View</button>
+                <button id="weekly-btn"
+                    class="bg-stone-800 hover:bg-stone-700 text-stone-200 text-xs font-bold px-4 py-2.5 rounded-xl border border-stone-700 transition-all">Weekly
+                    View</button>
+                <button id="monthly-btn"
+                    class="bg-stone-800 hover:bg-stone-700 text-stone-200 text-xs font-bold px-4 py-2.5 rounded-xl border border-stone-700 transition-all">Monthly
+                    View</button>
+            </div>
+        </div>
+
+        <!-- KPI Cards -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-6 mb-8">
+        <!-- Total Revenue Card -->
+        <div class="bg-stone-950 p-3 md:p-6 rounded-2xl border border-stone-800 shadow-xl overflow-hidden">
+            <p class="text-[9px] md:text-[10px] text-stone-500 font-bold uppercase tracking-wider">Total Revenue</p>
+            <p id="total-revenue"
+                class="text-xs sm:text-sm md:text-2xl font-black text-emerald-400 mt-1.5 md:mt-2 truncate">ksh0.00</p>
+        </div>
+    
+        <!-- Total Transactions Card -->
+        <div class="bg-stone-950 p-3 md:p-6 rounded-2xl border border-stone-800 shadow-xl overflow-hidden">
+            <p class="text-[9px] md:text-[10px] text-stone-500 font-bold uppercase tracking-wider">Total Transactions</p>
+            <p id="total-trans" class="text-xs sm:text-sm md:text-2xl font-black text-white mt-1.5 md:mt-2 truncate">0</p>
+        </div>
+    
+        <!-- Avg Sale Value Card -->
+        <div class="bg-stone-950 p-3 md:p-6 rounded-2xl border border-stone-800 shadow-xl overflow-hidden">
+            <p class="text-[9px] md:text-[10px] text-stone-500 font-bold uppercase tracking-wider">Avg Sale Value</p>
+            <p id="avg-sale" class="text-xs sm:text-sm md:text-2xl font-black text-blue-400 mt-1.5 md:mt-2 truncate">ksh0.00
+            </p>
+        </div>
+    
+        <!-- Top Item Card -->
+        <div class="bg-stone-950 p-3 md:p-6 rounded-2xl border border-stone-800 shadow-xl overflow-hidden">
+            <p class="text-[9px] md:text-[10px] text-stone-500 font-bold uppercase tracking-wider">Top Item</p>
+            <p id="top-item" class="text-xs sm:text-sm md:text-sm font-bold text-stone-200 mt-1.5 md:mt-2 truncate">-</p>
+        </div>
+    </div>
+
+        <!-- Transaction Table -->
+        <div class="bg-stone-950 p-6 rounded-2xl border border-stone-800 shadow-xl">
+            <h3 class="text-sm font-bold text-white mb-4">Detailed Statement</h3>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-xs">
+                    <thead>
+                        <tr class="text-stone-500 border-b border-stone-800">
+                            <th class="pb-3 font-bold">DATE</th>
+                            <th class="pb-3 font-bold">ITEMS</th>
+                            <th class="pb-3 font-bold text-right">TOTAL</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-body" class="text-stone-300">
+                        <!-- Data will be injected here by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <script>
+
+        function toggleMobileMenu() {
+                const sidebar = document.getElementById('sidebar');
+                sidebar.classList.toggle('-translate-x-full');
+            }
+        // 1. Function to update UI and fetch data
+        async function fetchReport(type) {
+            try {
+                const response = await fetch(`/api/reports?type=${type}`);
+                const data = await response.json();
+
+                if (!data.success) return;
+
+                // Update KPI Cards
+                document.querySelector('#total-revenue').textContent = `ksh${data.kpis.revenue.toFixed(2)}`;
+                document.querySelector('#total-trans').textContent = data.kpis.transactions;
+                document.querySelector('#avg-sale').textContent = `ksh${data.kpis.avgSale.toFixed(2)}`;
+                document.querySelector('#top-item').textContent = data.kpis.topItem;
+
+                // Render Table Rows
+                const tbody = document.getElementById('table-body');
+                tbody.innerHTML = '';
+
+                if (data.transactions.length === 0) {
+                    tbody.innerHTML = `
+                        <tr>
+                            <td colspan="3" class="px-6 py-6 text-center text-stone-500 italic">
+                                No transactions for this ${type} window.
+                            </td>
+                        </tr>`;
+                    return;
+                }
+
+                data.transactions.forEach(tx => {
+                    const dateFormatted = new Date(tx.created_at).toLocaleDateString();
+                    const row = `
+                        <tr class="border-b border-stone-800/50 hover:bg-stone-900/50 transition-colors">
+                            <td class="px-6 py-4 text-stone-400 font-mono text-xs">${dateFormatted}</td>
+                            <td class="px-6 py-4 text-stone-200 font-medium">${tx.itemsSummary || 'Items'}</td>
+                            <td class="px-6 py-4 text-right font-bold text-white">ksh${parseFloat(tx.total_amount).toFixed(2)}</td>
+                        </tr>
+                    `;
+                    tbody.innerHTML += row;
+                });
+            } catch (err) {
+                console.error("Failed to load report data:", err);
+            }
+        }
+
+        // 2. Helper to handle visual button switching
+        function setActiveButton(activeId) {
+            ['daily-btn', 'weekly-btn', 'monthly-btn'].forEach(id => {
+                const btn = document.getElementById(id);
+                if (id === activeId) {
+                    btn.className = "bg-emerald-600 text-white font-bold px-4 py-2.5 rounded-xl shadow-lg transition-all";
+                } else {
+                    btn.className = "bg-stone-800 hover:bg-stone-700 text-stone-200 text-xs font-bold px-4 py-2.5 rounded-xl border border-stone-700 transition-all";
+                }
+            });
+        }
+
+        // 3. Event Listeners
+        document.getElementById('daily-btn').addEventListener('click', () => {
+            setActiveButton('daily-btn');
+            fetchReport('daily');
+        });
+
+        document.getElementById('weekly-btn').addEventListener('click', () => {
+            setActiveButton('weekly-btn');
+            fetchReport('weekly');
+        });
+
+        document.getElementById('monthly-btn').addEventListener('click', () => {
+            setActiveButton('monthly-btn');
+            fetchReport('monthly');
+        });
+
+        // 4. Initial Load (Default to Daily)
+        fetchReport('daily');
+
+        document.getElementById('logoutBtn').addEventListener('click', async () => {
+                try {
+                    const response = await fetch('/api/logout', { method: 'POST' });
+                    const result = await response.json();
+
+                    if (result.success) {
+                        // Force redirect to login page
+                        window.location.href = '/login';
+                    } else {
+                        alert('Logout failed!');
+                    }
+                } catch (err) {
+                    console.error('Logout error:', err);
+                    alert('Something went wrong during logout.');
+                }
+            });
+
+        window.addEventListener('DOMContentLoaded', () => {
+                const currentPath = window.location.pathname;
+                const navLinks = document.querySelectorAll('aside nav a');
+
+                navLinks.forEach(link => {
+                    const href = link.getAttribute('href');
+                    const isActive = href === '/'
+                        ? currentPath === '/' || currentPath === ''
+                        : currentPath.endsWith(href);
+
+                    if (isActive) {
+                        link.className = "flex items-center space-x-3 px-4 py-3 rounded-xl font-bold text-sm transition-all bg-emerald-900 text-white shadow-sm ring-1 ring-white/5";
+                    } else {
+                        link.className = "flex items-center space-x-3 px-4 py-3 rounded-xl font-bold text-sm transition-all text-emerald-400/80 hover:bg-emerald-900/50 hover:text-emerald-200";
+                    }
+                });
+            });
+
+        window.addEventListener('DOMContentLoaded', () => {
+                fetch('/api/current-user')
+                    .then(response => response.json())
+                    .then(data => {
+                        // If the user is NOT an admin (i.e., they are a cashier or vendor), hide admin elements
+                        if (data && data.role !== 'admin') {
+                            const adminElements = document.querySelectorAll('[data-admin-only]');
+                            adminElements.forEach(el => {
+                                el.style.display = 'none';
+                            });
+                        }
+                    })
+                    .catch(err => console.error('Failed to load user session info:', err));
+            });
+    </script>
+</body>
+
+</html>

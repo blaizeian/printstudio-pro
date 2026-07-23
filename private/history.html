@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PrintStudio Pro - Archive Logs</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-stone-900 text-stone-100 font-sans min-h-dvh flex flex-col md:flex-row antialiased">
+
+    <!-- Mobile Header Bar (Only visible on phones) -->
+    <header
+        class="md:hidden flex items-center justify-between bg-emerald-950 text-emerald-300 p-4 border-b border-emerald-900 sticky top-0 z-30">
+        <div class="flex items-center space-x-3">
+            <div class="bg-emerald-600 p-2 rounded-xl text-lg font-black text-white shadow-lg">🖨️</div>
+            <h1 class="text-sm font-black text-white tracking-wider uppercase">PrintStudio</h1>
+        </div>
+        <button onclick="toggleMobileMenu()" class="bg-emerald-900/50 p-2 rounded-xl text-white focus:outline-none">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+            </svg>
+        </button>
+    </header>
+
+
+    <!-- GREEN SIDEBAR NAVIGATION PANEL (Identical Layout for Page Continuity) -->
+    <!-- GREEN SIDEBAR NAVIGATION PANEL -->
+    <!-- GREEN SIDEBAR NAVIGATION PANEL (Sticky Desktop + Mobile Drawer) -->
+    <aside id="sidebar"
+        class="fixed inset-y-0 left-0 z-40 w-64 bg-emerald-950 h-screen text-emerald-300 p-4 flex flex-col justify-between border-r border-emerald-900 shadow-2xl transform -translate-x-full md:translate-x-0 md:sticky md:top-0 transition-transform duration-300 shrink-0">
+    
+        <!-- Top Section: Logo & Nav Wrapper -->
+        <div class="flex flex-col space-y-4 flex-1 overflow-hidden">
+            <!-- Logo Header -->
+            <div class="flex items-center justify-between shrink-0 px-2">
+                <div class="flex items-center space-x-3">
+                    <div class="bg-emerald-600 p-2 rounded-xl text-lg font-black text-white shadow-lg">🖨️</div>
+                    <div>
+                        <h1 class="text-sm font-black text-white tracking-wider uppercase">PrintStudio</h1>
+                        <p class="text-[10px] text-emerald-400 font-bold tracking-widest">PRO SYSTEM</p>
+                    </div>
+                </div>
+                <!-- Close button for mobile drawer -->
+                <button onclick="toggleMobileMenu()"
+                    class="md:hidden text-emerald-400 hover:text-white p-1 text-lg font-bold">
+                    ✕
+                </button>
+            </div>
+    
+            <!-- Scrollable Navigation Area -->
+            <nav class="flex flex-col space-y-1 overflow-y-auto flex-1 pr-1" id="sidebar-nav">
+                <a href="/"
+                    class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl font-bold text-sm transition-all text-emerald-400/80 hover:bg-emerald-900/50 hover:text-emerald-200">
+                    <span>🖥️</span><span>Terminal</span>
+                </a>
+                <a href="/history" data-vendor-exclude
+                    class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl font-bold text-sm transition-all text-emerald-400/80 hover:bg-emerald-900/50 hover:text-emerald-200">
+                    <span>📊</span><span>Archive</span>
+                </a>
+                <a href="/analytics" data-admin-only
+                    class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl font-bold text-sm transition-all text-emerald-400/80 hover:bg-emerald-900/50 hover:text-emerald-200">
+                    <span>📈</span><span>Analytics</span>
+                </a>
+                <a href="/inventory" data-admin-only
+                    class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl font-bold text-sm transition-all text-emerald-400/80 hover:bg-emerald-900/50 hover:text-emerald-200">
+                    <span>📦</span><span>Catalog</span>
+                </a>
+                <a href="/reports" data-admin-only
+                    class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl font-bold text-sm transition-all text-emerald-400/80 hover:bg-emerald-900/50 hover:text-emerald-200">
+                    <span>📄</span><span>reports</span>
+                </a>
+                <a href="/cashiers" data-admin-only
+                    class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl font-bold text-sm transition-all text-emerald-400/80 hover:bg-emerald-900/50 hover:text-emerald-200">
+                    <span>👥</span><span>Cashiers</span>
+                </a>
+                
+                <a href="/loans" data-admin-only
+                    class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl font-bold text-sm transition-all text-emerald-400/80 hover:bg-emerald-900/50 hover:text-emerald-200">
+                    <span>💳</span><span>Loans Ledger</span>
+                </a>
+                <a href="/messages" data-admin-only
+                    class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl font-bold text-sm transition-all text-emerald-400/80 hover:bg-emerald-900/50 hover:text-emerald-200">
+                    <span>💬</span><span>Messages</span>
+                </a>
+                <a href="/account"
+                    class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl font-bold text-sm transition-all text-emerald-400/80 hover:bg-emerald-900/50 hover:text-emerald-200">
+                    <span>⚙️</span><span>Settings</span>
+                </a>
+            </nav>
+        </div>
+    
+        <!-- Bottom Section: Logout & Operator Info -->
+        <div class="space-y-3 shrink-0 pt-3 border-t border-emerald-900">
+            <div>
+                <button id="logoutBtn"
+                    class="flex items-center space-x-3 px-3.5 py-2.5 w-full text-red-400 hover:bg-red-900/20 rounded-xl font-bold text-sm transition-all">
+                    <span>🚪</span><span>Logout</span>
+                </button>
+            </div>
+            <div class="flex items-center space-x-3 px-2">
+                <div
+                    class="w-8 h-8 rounded-full bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-xs font-black text-emerald-400">
+                    OP</div>
+                <div>
+                    <p id="operatorName" class="text-xs font-bold text-white leading-tight">main counter</p>
+                    <span id="live-clock" class="text-[10px] font-mono font-medium text-emerald-600">00:00:00 AM</span>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- CORE INTERFACE AREA -->
+    <main class="flex-1 p-6 md:p-8 overflow-y-auto">
+        <div class="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div>
+                <h2 class="text-2xl font-black text-white tracking-tight">Transaction Log Master</h2>
+                <p class="text-xs text-stone-400 mt-1">Historical ledger records pulled dynamically directly out of
+                    MariaDB database tables.</p>
+            </div>
+            <button onclick="fetchArchiveData()"
+                class="bg-stone-800 hover:bg-stone-700 text-stone-200 text-xs font-bold px-4 py-2.5 rounded-xl border border-stone-700 transition-all self-start sm:self-auto">
+                🔄 Refresh Logs
+            </button>
+        </div>
+
+        <!-- Table Desktop Layout / Card Mobile Stack Container -->
+        <div class="bg-stone-950 rounded-2xl border border-stone-800 shadow-xl overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-xs border-collapse">
+                    <thead>
+                        <tr
+                            class="bg-stone-900/50 border-b border-stone-800 text-stone-400 font-bold tracking-wider uppercase text-[10px]">
+                            <th class="p-4 pl-6">Reference ID</th>
+                            <th class="p-4">Timestamp</th>
+                            <th class="p-4">Item Matrix Summary</th>
+                            <th class="p-4 text-right">Tax (8%)</th>
+                            <th class="p-4 text-right">Total Invoice</th>
+                            <th class="pb-3">Operator</th>
+                            <th class="p-4 pr-6 text-center">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="archive-table-body" class="divide-y divide-stone-800/50 font-medium text-stone-300">
+                        <!-- Fetched rows injected here -->
+                        <tr>
+                            <td colspan="7" class="p-12 text-center text-stone-500 font-medium">Querying core tracking
+                                database...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <script>
+
+        function toggleMobileMenu() {
+                const sidebar = document.getElementById('sidebar');
+                sidebar.classList.toggle('-translate-x-full');
+            }
+        // Fetch rows out of the node server relational compiler endpoint
+        function fetchArchiveData() {
+                const tbody = document.getElementById('archive-table-body');
+
+                fetch('/api/history')
+                    .then(res => res.json())
+                    .then(records => {
+                        if (records.length === 0) {
+                            tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7" class="p-12 text-center text-stone-500 font-medium">
+                            No transaction logs exist inside the database schema yet.
+                        </td>
+                    </tr>`;
+                            return;
+                        }
+
+                        tbody.innerHTML = records.map(rec => {
+                            // Determine badge style based on role
+                            const roleBadge = rec.cashier_role === 'vendor'
+                                ? `<span class="bg-purple-950 text-purple-400 text-[9px] font-bold px-1.5 py-0.5 rounded-full border border-purple-900 ml-1">Vendor</span>`
+                                : rec.cashier_role === 'cashier'
+                                    ? `<span class="bg-emerald-950 text-emerald-400 text-[9px] font-bold px-1.5 py-0.5 rounded-full border border-emerald-900 ml-1">Cashier</span>`
+                                    : '';
+
+                            return `
+                    <tr class="hover:bg-stone-900/30 transition-colors">
+                        <td class="p-4 pl-6 font-mono font-bold text-white">#${rec.id}</td>
+                        <td class="p-4 text-stone-400">${rec.date}</td>
+                        <td class="p-4 text-stone-300 max-w-xs truncate">${rec.itemSummary}</td>
+                        <td class="p-4 text-right text-stone-400">ksh${rec.tax.toFixed(2)}</td>
+                        <td class="p-4 text-right font-black text-emerald-400">ksh${rec.total.toFixed(2)}</td>
+                        
+                        <!-- Operator Column -->
+                        <td class="p-4 font-bold text-white flex items-center">
+                            ${rec.cashier_name || 'System / Unassigned'} ${roleBadge}
+                        </td>
+
+                        <!-- Status Column -->
+                        <td class="p-4 pr-6 text-center">
+                            <span class="inline-block px-2.5 py-1 rounded-full text-[10px] font-extrabold tracking-wide uppercase border bg-emerald-950/50 border-emerald-800 text-emerald-400">
+                                ${rec.status}
+                            </span>
+                        </td>
+                    </tr>
+                `;
+                        }).join('');
+                    })
+                    .catch(err => {
+                        console.error("Archive sync error:", err);
+                        tbody.innerHTML = `
+                <tr>
+                    <td colspan="7" class="p-12 text-center text-rose-500 font-bold">
+                        Database Connection Fault: Unable to resolve data logs pipeline.
+                    </td>
+                </tr>`;
+                    });
+            }
+        // Running Clock Frame Sync
+        setInterval(() => {
+            const el = document.getElementById('live-clock');
+            if (el) el.innerText = new Date().toLocaleTimeString();
+        }, 1000);
+
+        window.addEventListener('DOMContentLoaded', fetchArchiveData);
+        document.getElementById('logoutBtn').addEventListener('click', async () => {
+                try {
+                    const response = await fetch('/api/logout', { method: 'POST' });
+                    const result = await response.json();
+
+                    if (result.success) {
+                        // Force redirect to login page
+                        window.location.href = '/login';
+                    } else {
+                        alert('Logout failed!');
+                    }
+                } catch (err) {
+                    console.error('Logout error:', err);
+                    alert('Something went wrong during logout.');
+                }
+            });
+
+        window.addEventListener('DOMContentLoaded', () => {
+                const currentPath = window.location.pathname;
+                const navLinks = document.querySelectorAll('aside nav a');
+
+                navLinks.forEach(link => {
+                    const href = link.getAttribute('href');
+                    const isActive = href === '/'
+                        ? currentPath === '/' || currentPath === ''
+                        : currentPath.endsWith(href);
+
+                    if (isActive) {
+                        link.className = "flex items-center space-x-3 px-4 py-3 rounded-xl font-bold text-sm transition-all bg-emerald-900 text-white shadow-sm ring-1 ring-white/5";
+                    } else {
+                        link.className = "flex items-center space-x-3 px-4 py-3 rounded-xl font-bold text-sm transition-all text-emerald-400/80 hover:bg-emerald-900/50 hover:text-emerald-200";
+                    }
+                });
+            });
+
+        window.addEventListener('DOMContentLoaded', () => {
+                fetch('/api/current-user')
+                    .then(response => response.json())
+                    .then(data => {
+                        // If the user is NOT an admin (i.e., they are a cashier or vendor), hide admin elements
+                        if (data && data.role !== 'admin') {
+                            const adminElements = document.querySelectorAll('[data-admin-only]');
+                            adminElements.forEach(el => {
+                                el.style.display = 'none';
+                            });
+                        }
+                    })
+                    .catch(err => console.error('Failed to load user session info:', err));
+            });
+        
+    </script>
+</body>
+
+</html>
