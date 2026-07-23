@@ -25,7 +25,11 @@ app.use(
 
 // Middleware Configurations
 app.use(cors({
-    origin: process.env.CORS_ORIGIN || 'http://localhost:3000', // [PATCH] Explicit origin instead of wildcard *
+    origin: [
+        'http://localhost:3000',
+        'https://printstudio-pos-production.up.railway.app',
+        process.env.CORS_ORIGIN
+    ].filter(Boolean), // Removes any undefined values safely
     credentials: true
 }));
 app.use(express.json());
