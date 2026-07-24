@@ -781,7 +781,7 @@ app.get('/api/cashiers/sales-summary', verifyRole(['admin']), async (req, res) =
     try {
         const { period = 'all', date } = req.query;
 
-        let dateCondition = '';x
+        let dateCondition = '';
         const queryParams = [];
 
         if (period === 'daily') {
