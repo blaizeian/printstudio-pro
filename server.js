@@ -397,10 +397,15 @@ app.post('/api/checkout', verifyRole(['admin', 'cashier', 'vendor']), async (req
         const loanBalance = isLoan ? Math.max(0, calculatedTotal - finalDeposit) : 0;
         const userId = currentUser ? currentUser.id : null;
 
-        // 4. Insert into the orders table with deposit and loan balance included
+        // --- TIMEZONE FIX ---
+        // Generates the current time explicitly in local time (Africa/Nairobi)
+        const localTimeStr = new Date().toLocaleString("en-US", { timeZone: "Africa/Nairobi" });
+        const localCreatedAt = new Date(localTimeStr);
+
+        // 4. Insert into the orders table with created_at explicitly included
         const [orderResult] = await connection.execute(
-            `INSERT INTO orders (total_amount, user_id, is_loan, customer_name, customer_phone, deposit_amount, loan_balance, loan_status) 
-             VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+            `INSERT INTO orders (total_amount, user_id, is_loan, customer_name, customer_phone, deposit_amount, loan_balance, loan_status, created_at) 
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
             [
                 calculatedTotal,
                 userId,
@@ -409,7 +414,8 @@ app.post('/api/checkout', verifyRole(['admin', 'cashier', 'vendor']), async (req
                 isLoan && customerPhone ? customerPhone.trim() : null,
                 finalDeposit,
                 loanBalance,
-                isLoan ? 'unpaid' : 'paid'
+                isLoan ? 'unpaid' : 'paid',
+                localCreatedAt // <--- Explicit local timestamp
             ]
         );
         const orderId = orderResult.insertId;
@@ -447,7 +453,7 @@ app.post('/api/checkout', verifyRole(['admin', 'cashier', 'vendor']), async (req
     } finally {
         connection.release();
     }
-}); 
+});
 app.get('/api/reports', verifyRole(['admin']), async (req, res) => {
     const type = req.query.type || 'weekly';
 
@@ -775,7 +781,7 @@ app.get('/api/cashiers/sales-summary', verifyRole(['admin']), async (req, res) =
     try {
         const { period = 'all', date } = req.query;
 
-        let dateCondition = '';
+        let dateCondition = '';x
         const queryParams = [];
 
         if (period === 'daily') {
