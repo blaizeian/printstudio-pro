@@ -336,82 +336,96 @@
                     return;
                 }
 
-                // Open a new window for the receipt
-                const printWindow = window.open('', '_blank', 'width=400,height=600');
-
                 const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
                 const tax = total * 0.00;
                 const grandTotal = total + tax;
 
-                printWindow.document.write(`
+                // 1. Create or reuse a hidden iframe in the DOM
+                let printFrame = document.getElementById('receipt-print-frame');
+                if (!printFrame) {
+                    printFrame = document.createElement('iframe');
+                    printFrame.id = 'receipt-print-frame';
+                    printFrame.style.display = 'none';
+                    document.body.appendChild(printFrame);
+                }
+
+                // 2. Build the exact thermal receipt HTML content
+                const receiptHTML = `
         <html>
             <head>
                 <style>
-    /* 1. Printer Settings (For Thermal Paper) */
-    @page { 
-        size: 80mm; 
-        margin: 0; 
-    }
-
-    /* 2. Body (Controls the receipt width and font) */
-    body { 
-        font-family: 'Courier New', Courier, monospace; 
-        color: #000;
-        width: 72mm; 
-        margin: 0 auto; 
-        padding: 5px; 
-    }
-
-    /* 3. Layout Styles (Existing) */
-    .header { text-align: center; margin-bottom: 20px; }
-    table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
-    th, td { border-bottom: 1px dashed #000; padding: 5px; text-align: left; }
-    .total-section { text-align: right; font-weight: bold; }
-    .footer {
-        text-align: center;
-        margin-top: 20px;
-        font-size: 0.9em;
-        border-top: 1px dashed #000;
-        padding-top: 10px;
-    }
-
-</style>
-                
+                    @page { 
+                        size: 80mm auto; 
+                        margin: 0; 
+                    }
+                    body { 
+                        font-family: 'Courier New', Courier, monospace; 
+                        color: #000;
+                        width: 72mm; 
+                        margin: 0 auto; 
+                        padding: 5px; 
+                        background: #fff;
+                    }
+                    .header { text-align: center; margin-bottom: 15px; }
+                    table { width: 100%; border-collapse: collapse; margin-bottom: 15px; }
+                    th, td { border-bottom: 1px dashed #000; padding: 4px; text-align: left; font-size: 11px; }
+                    .total-section { text-align: right; font-weight: bold; font-size: 12px; }
+                    .footer {
+                        text-align: center;
+                        margin-top: 15px;
+                        font-size: 0.85em;
+                        border-top: 1px dashed #000;
+                        padding-top: 8px;
+                    }
+                </style>
             </head>
             <body>
                 <div class="header">
-                    <h3> MAX ART AND GALLERY PRINT SHOP</h3>
-                    <p>${new Date().toLocaleString()}</p>
+                    <h3 style="margin:0; font-size: 14px;">MAX ART AND GALLERY PRINT SHOP</h3>
+                    <p style="margin:4px 0; font-size: 10px;">${new Date().toLocaleString()}</p>
                 </div>
                 <table>
-                    <thead><tr><th>Item</th><th>Qty</th><th>Price</th></tr></thead>
+                    <thead>
+                        <tr>
+                            <th>Item</th>
+                            <th style="text-align:center;">Qty</th>
+                            <th style="text-align:right;">Price</th>
+                        </tr>
+                    </thead>
                     <tbody>
                         ${cart.map(item => `
                             <tr>
                                 <td>${item.name}</td>
-                                <td>${item.quantity}</td>
-                                <td>ksh${(item.price * item.quantity).toFixed(2)}</td>
+                                <td style="text-align:center;">${item.quantity}</td>
+                                <td style="text-align:right;">ksh${(item.price * item.quantity).toFixed(2)}</td>
                             </tr>
                         `).join('')}
                     </tbody>
                 </table>
                 <div class="total-section">
-                    <p>Tax (0%): ksh${tax.toFixed(2)}</p>
-                    <p style="font-size: 1.2em;">TOTAL: ksh${grandTotal.toFixed(2)}</p>
+                    <p style="margin:2px 0;">Tax (0%): ksh${tax.toFixed(2)}</p>
+                    <p style="margin:4px 0; font-size: 1.1em;">TOTAL: ksh${grandTotal.toFixed(2)}</p>
                 </div>
                 <div class="footer">
-        <p>Thank you for doing business with us!</p>
-        <p>Please come again!</p>
-        <p>📞 Contact: 254 456-7890</p>
-    </div>
+                    <p style="margin:2px 0;">Thank you for doing business with us!</p>
+                    <p style="margin:2px 0;">Please come again!</p>
+                    <p style="margin:2px 0;">📞 Contact: 254 456-7890</p>
+                </div>
             </body>
         </html>
-    `);
+    `;
 
-                printWindow.document.close();
-                printWindow.focus();
-                printWindow.print();
-                printWindow.close(); // Uncomment to close tab after printing
+                // 3. Write to the iframe document and print safely
+                const frameDoc = printFrame.contentWindow.document;
+                frameDoc.open();
+                frameDoc.write(receiptHTML);
+                frameDoc.close();
+
+                // Give the browser a split second to render styles before triggering print
+                setTimeout(() => {
+                    printFrame.contentWindow.focus();
+                    printFrame.contentWindow.print();
+                }, 250);
             }
         // Operational management method to accept custom inventory additions
         function handleAddNewItem(event) {
