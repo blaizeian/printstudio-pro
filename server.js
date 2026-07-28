@@ -160,7 +160,7 @@ app.get('/api/history', verifyRole(['admin', 'cashier']), async (req, res) => {
 
         sql += ` 
                 ORDER BY id DESC
-                LIMIT 50
+                LIMIT 70
             ) AS recent_orders
             JOIN orders o ON recent_orders.id = o.id
             LEFT JOIN order_items oi ON o.id = oi.order_id
@@ -930,7 +930,7 @@ app.get('/messages', verifyRole(['admin']), (req, res) => {
 app.get('/api/messages', verifyRole(['admin']), async (req, res) => {
     try {
         const { date, limit } = req.query;
-        const safeLimit = parseInt(limit) || 50;
+        const safeLimit = parseInt(limit) || 70;
 
         let rows;
         if (date) {
@@ -1063,14 +1063,35 @@ app.put('/api/account/profile', verifyRole(['admin']), async (req, res) => {
 app.get('/api/loans', verifyRole(['admin']), async (req, res) => {
     const connection = await db.getConnection();
     try {
-        const [loans] = await connection.execute(
-            `SELECT id, total_amount, 
-                    DATE_FORMAT(created_at, '%Y-%m-%d %H:%i:%s') AS created_at, 
-                    is_loan, customer_name, customer_phone, deposit_amount, loan_balance, loan_status 
-             FROM orders 
-             WHERE is_loan = 1 
-             ORDER BY created_at DESC`
-        );
+        const { date, limit } = req.query;
+        const safeLimit = parseInt(limit) || 50;
+
+        let loans;
+        if (date && date.trim() !== '') {
+            const [result] = await connection.execute(
+                `SELECT id, total_amount, 
+                        DATE_FORMAT(created_at, '%Y-%m-%d %H:%i:%s') AS created_at, 
+                        is_loan, customer_name, customer_phone, deposit_amount, loan_balance, loan_status 
+                 FROM orders 
+                 WHERE is_loan = 1 AND DATE(created_at) = ? 
+                 ORDER BY created_at DESC 
+                 LIMIT ${safeLimit}`,
+                [date.trim()]
+            );
+            loans = result;
+        } else {
+            const [result] = await connection.execute(
+                `SELECT id, total_amount, 
+                        DATE_FORMAT(created_at, '%Y-%m-%d %H:%i:%s') AS created_at, 
+                        is_loan, customer_name, customer_phone, deposit_amount, loan_balance, loan_status 
+                 FROM orders 
+                 WHERE is_loan = 1 
+                 ORDER BY created_at DESC 
+                 LIMIT ${safeLimit}`
+            );
+            loans = result;
+        }
+
         res.json({ success: true, loans });
     } catch (error) {
         console.error("--- FETCH LOANS ERROR ---", error);
@@ -1079,7 +1100,6 @@ app.get('/api/loans', verifyRole(['admin']), async (req, res) => {
         connection.release();
     }
 });
-
 // ================= API ENDPOINT: MARK LOAN AS PAID (Admin Only) =================
 app.post('/api/loans/:id/pay', verifyRole(['admin']), async (req, res) => {
     const orderId = req.params.id;

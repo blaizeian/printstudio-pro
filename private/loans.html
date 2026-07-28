@@ -131,10 +131,21 @@
 
         <!-- Loans Table Container -->
         <div class="bg-stone-950 rounded-2xl border border-stone-800 shadow-xl overflow-hidden">
-            <div class="p-4 border-b border-stone-800 flex justify-between items-center">
+            <div class="p-4 border-b border-stone-800 flex flex-col sm:flex-row justify-between items-center gap-3">
                 <h3 class="text-xs font-bold uppercase tracking-wider text-stone-300">Active Credit Accounts</h3>
-                <input type="text" id="loan-search" placeholder="Search customer or phone..."
-                    class="bg-stone-900 border border-stone-800 rounded-lg px-3 py-1.5 text-xs text-stone-200 focus:outline-none focus:border-emerald-500 w-48 md:w-64">
+            
+                <!-- ADD THIS WRAPPER & DATE INPUT -->
+                <div class="flex flex-wrap items-center gap-3 w-full sm:w-auto">
+                    <div
+                        class="flex items-center gap-2 bg-stone-900 px-3 py-1.5 rounded-lg border border-stone-800 focus-within:border-emerald-500 transition-all flex-1 sm:flex-initial">
+                        <span class="text-stone-400 text-[11px] font-semibold whitespace-nowrap">📅 Date:</span>
+                        <input type="date" id="loan-date-filter" onchange="fetchLoans()"
+                            class="bg-transparent text-stone-200 text-xs font-medium focus:outline-none w-full sm:w-auto cursor-pointer">
+                    </div>
+            
+                    <input type="text" id="loan-search" placeholder="Search customer or phone..."
+                        class="bg-stone-900 border border-stone-800 rounded-lg px-3 py-1.5 text-xs text-stone-200 focus:outline-none focus:border-emerald-500 w-full sm:w-64 flex-1 sm:flex-initial">
+                </div>
             </div>
 
             <div class="overflow-x-auto">
@@ -172,21 +183,30 @@
         }
 
         // Fetch and Render Loans Data
+        // Fetch and Render Loans Data
         async function fetchLoans() {
-            try {
-                const res = await fetch('/api/loans');
-                const data = await res.json();
+                try {
+                    // ADD THIS LINE TO READ THE DATE INPUT
+                    const selectedDate = document.getElementById('loan-date-filter').value;
 
-                if (data.success) {
-                    renderLoans(data.loans);
-                } else {
-                    document.getElementById('loans-table-body').innerHTML = `<tr><td colspan="9" class="p-6 text-center text-red-400">Failed to load loan data.</td></tr>`;
+                    let url = '/api/loans';
+                    if (selectedDate) {
+                        url += `?date=${selectedDate}`;
+                    }
+
+                    const res = await fetch(url);
+                    const data = await res.json();
+
+                    if (data.success) {
+                        renderLoans(data.loans);
+                    } else {
+                        document.getElementById('loans-table-body').innerHTML = `<tr><td colspan="9" class="p-6 text-center text-red-400">Failed to load loan data.</td></tr>`;
+                    }
+                } catch (err) {
+                    console.error(err);
+                    document.getElementById('loans-table-body').innerHTML = `<tr><td colspan="9" class="p-6 text-center text-red-400">System error loading records.</td></tr>`;
                 }
-            } catch (err) {
-                console.error(err);
-                document.getElementById('loans-table-body').innerHTML = `<tr><td colspan="9" class="p-6 text-center text-red-400">System error loading records.</td></tr>`;
             }
-        }
 
         const logoutBtn = document.getElementById('logoutBtn');
             if (logoutBtn) {
