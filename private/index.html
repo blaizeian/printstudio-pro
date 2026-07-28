@@ -539,10 +539,13 @@
                 const originalText = btn.innerText;
                 const originalClasses = btn.className;
 
+                // Prevent any action if button is already disabled
+                if (btn.disabled) return;
+
                 // 1. Handle Empty Ledger (Red UI Feedback)
                 if (cart.length === 0) {
                     btn.innerText = "Ledger Empty!";
-                    btn.classList.add("bg-red-600"); // Adds the red color
+                    btn.classList.add("bg-red-600");
                     btn.classList.remove("bg-green-600");
 
                     setTimeout(() => {
@@ -559,7 +562,6 @@
                 const customerPhone = document.getElementById('customer-phone') ? document.getElementById('customer-phone').value.trim() : '';
                 const depositAmount = document.getElementById('loan-deposit') ? parseFloat(document.getElementById('loan-deposit').value) || 0 : 0;
 
-                // Calculate total cart value and explicit loan balance
                 const totalCartValue = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
                 const loanBalance = Math.max(0, totalCartValue - depositAmount);
 
@@ -594,7 +596,11 @@
                     }
                 }
 
-                // 3. Map the data with explicit total and loan balance included
+                // --- LOCKDOWN: Just disable the button so it can't be clicked again ---
+                btn.disabled = true;
+                btn.innerText = "Processing..."; // Optional: let the user know it's working
+
+                // 3. Map the data
                 const payload = {
                     items: cart.map(item => ({
                         id: item.id,
@@ -619,12 +625,13 @@
                     .then(res => res.json())
                     .then(data => {
                         if (data.success) {
-                            // SUCCESS UI (Blue UI Feedback)
-                            btn.innerText = "Order Complete!";
-                            btn.classList.add("bg-blue-600"); // Adds the blue color
-                            btn.classList.remove("bg-green-600");
+                            // SUCCESS: NOW clear the cart because backend saved successfully
                             cart = [];
                             renderCart();
+
+                            btn.innerText = "Order Complete!";
+                            btn.classList.add("bg-blue-600");
+                            btn.classList.remove("bg-green-600");
 
                             // Reset loan form elements and balance display on success
                             if (loanCheckbox) loanCheckbox.checked = false;
@@ -637,19 +644,21 @@
                             if (document.getElementById('customer-phone')) document.getElementById('customer-phone').value = '';
                             if (document.getElementById('loan-deposit')) document.getElementById('loan-deposit').value = '';
 
-                            // Reset button after 2 seconds
+                            // Reset button and re-enable after 2 seconds
                             setTimeout(() => {
                                 btn.innerText = originalText;
                                 btn.className = originalClasses;
+                                btn.disabled = false;
                             }, 2000);
                         } else {
-                            // FAILURE UI (Red UI Feedback)
+                            // FAILURE: Cart stays visible, just unlock the button so they can try again
                             btn.innerText = "Error!";
                             btn.className = "bg-red-600 text-white px-6 py-2 rounded-lg font-bold shadow-lg transition-all";
 
                             setTimeout(() => {
                                 btn.innerText = originalText;
                                 btn.className = originalClasses;
+                                btn.disabled = false;
                             }, 2000);
                             console.error("Checkout failed:", data.message);
                         }
@@ -661,6 +670,7 @@
                         setTimeout(() => {
                             btn.innerText = originalText;
                             btn.className = originalClasses;
+                            btn.disabled = false;
                         }, 2000);
                     });
             }
