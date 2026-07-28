@@ -317,6 +317,27 @@
             document.getElementById('live-clock').innerText = now.toLocaleTimeString();
         }, 1000);
 
+
+        // Real-time client-side search filter for loans
+        document.getElementById('loan-search').addEventListener('input', function (e) {
+                const searchTerm = e.target.value.toLowerCase().trim();
+                const rows = document.querySelectorAll('#loans-table-body tr');
+
+                rows.forEach(tr => {
+                    // Skip rows that are just loading or "no records found" messages
+                    if (tr.cells.length < 4) return;
+
+                    const customerName = tr.cells[2].textContent.toLowerCase();
+                    const customerPhone = tr.cells[3].textContent.toLowerCase();
+
+                    if (customerName.includes(searchTerm) || customerPhone.includes(searchTerm)) {
+                        tr.style.display = ''; // Show row
+                    } else {
+                        tr.style.display = 'none'; // Hide row
+                    }
+                });
+            });
+
         
 
         // Initialize on load
