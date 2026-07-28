@@ -178,7 +178,8 @@ app.get('/api/history', verifyRole(['admin', 'cashier']), async (req, res) => {
 
                 archiveMap[row.tx_number] = {
                     id: row.tx_number,
-                    date: `Today, ${timeStr}`,
+                    // Example: returns "2026-07-27 14:30:00" or similar
+                    date: `${timeStr}`,
                     total: parseFloat(row.total) || 0,
                     tax: parseFloat(row.tax) || 0,
                     status: 'Completed',
