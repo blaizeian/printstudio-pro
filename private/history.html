@@ -119,10 +119,21 @@
                 <p class="text-xs text-stone-400 mt-1">Historical ledger records pulled dynamically directly out of
                     MariaDB database tables.</p>
             </div>
-            <button onclick="fetchArchiveData()"
-                class="bg-stone-800 hover:bg-stone-700 text-stone-200 text-xs font-bold px-4 py-2.5 rounded-xl border border-stone-700 transition-all self-start sm:self-auto">
-                🔄 Refresh Logs
-            </button>
+
+            <!-- Fully Responsive Wrapper -->
+            <div class="flex flex-wrap items-center gap-3 w-full sm:w-auto">
+                <!-- Date Filter Input -->
+                <input type="date" id="history-date-filter" onchange="fetchArchiveData()"
+                    class="bg-stone-900 text-stone-200 text-xs font-medium px-3 py-2.5 rounded-xl border border-stone-700 focus:outline-none focus:border-emerald-500 transition-all flex-1 sm:flex-initial">
+            
+                <button onclick="fetchArchiveData()"
+                    class="bg-stone-800 hover:bg-stone-700 text-stone-200 text-xs font-bold px-4 py-2.5 rounded-xl border border-stone-700 transition-all flex-1 sm:flex-initial">
+                    🔄 Refresh Logs
+                </button>
+            </div>
+
+            
+            
         </div>
 
         <!-- Table Desktop Layout / Card Mobile Stack Container -->
@@ -162,22 +173,27 @@
         // Fetch rows out of the node server relational compiler endpoint
         function fetchArchiveData() {
                 const tbody = document.getElementById('archive-table-body');
+                const selectedDate = document.getElementById('history-date-filter').value;
 
-                fetch('/api/history')
+                let url = '/api/history';
+                if (selectedDate) {
+                    url += `?date=${selectedDate}`;
+                }
+
+                fetch(url)
                     .then(res => res.json())
                     .then(records => {
                         if (records.length === 0) {
                             tbody.innerHTML = `
-                    <tr>
-                        <td colspan="7" class="p-12 text-center text-stone-500 font-medium">
-                            No transaction logs exist inside the database schema yet.
-                        </td>
-                    </tr>`;
+                <tr>
+                    <td colspan="7" class="p-12 text-center text-stone-500 font-medium">
+                        No transaction logs exist for the selected date.
+                    </td>
+                </tr>`;
                             return;
                         }
 
                         tbody.innerHTML = records.map(rec => {
-                            // Determine badge style based on role
                             const roleBadge = rec.cashier_role === 'vendor'
                                 ? `<span class="bg-purple-950 text-purple-400 text-[9px] font-bold px-1.5 py-0.5 rounded-full border border-purple-900 ml-1">Vendor</span>`
                                 : rec.cashier_role === 'cashier'
@@ -185,36 +201,34 @@
                                     : '';
 
                             return `
-                    <tr class="hover:bg-stone-900/30 transition-colors">
-                        <td class="p-4 pl-6 font-mono font-bold text-white">#${rec.id}</td>
-                        <td class="p-4 text-stone-400">${rec.date}</td>
-                        <td class="p-4 text-stone-300 max-w-xs truncate">${rec.itemSummary}</td>
-                        <td class="p-4 text-right text-stone-400">ksh${rec.tax.toFixed(2)}</td>
-                        <td class="p-4 text-right font-black text-emerald-400">ksh${rec.total.toFixed(2)}</td>
-                        
-                        <!-- Operator Column -->
-                        <td class="p-4 font-bold text-white flex items-center">
-                            ${rec.cashier_name || 'System / Unassigned'} ${roleBadge}
-                        </td>
+                <tr class="hover:bg-stone-900/30 transition-colors">
+                    <td class="p-4 pl-6 font-mono font-bold text-white">#${rec.id}</td>
+                    <td class="p-4 text-stone-400">${rec.date}</td>
+                    <td class="p-4 text-stone-300 max-w-xs truncate">${rec.itemSummary}</td>
+                    <td class="p-4 text-right text-stone-400">ksh${rec.tax.toFixed(2)}</td>
+                    <td class="p-4 text-right font-black text-emerald-400">ksh${rec.total.toFixed(2)}</td>
+                    
+                    <td class="p-4 font-bold text-white flex items-center">
+                        ${rec.cashier_name || 'System / Unassigned'} ${roleBadge}
+                    </td>
 
-                        <!-- Status Column -->
-                        <td class="p-4 pr-6 text-center">
-                            <span class="inline-block px-2.5 py-1 rounded-full text-[10px] font-extrabold tracking-wide uppercase border bg-emerald-950/50 border-emerald-800 text-emerald-400">
-                                ${rec.status}
-                            </span>
-                        </td>
-                    </tr>
-                `;
+                    <td class="p-4 pr-6 text-center">
+                        <span class="inline-block px-2.5 py-1 rounded-full text-[10px] font-extrabold tracking-wide uppercase border bg-emerald-950/50 border-emerald-800 text-emerald-400">
+                            ${rec.status}
+                        </span>
+                    </td>
+                </tr>
+            `;
                         }).join('');
                     })
                     .catch(err => {
                         console.error("Archive sync error:", err);
                         tbody.innerHTML = `
-                <tr>
-                    <td colspan="7" class="p-12 text-center text-rose-500 font-bold">
-                        Database Connection Fault: Unable to resolve data logs pipeline.
-                    </td>
-                </tr>`;
+            <tr>
+                <td colspan="7" class="p-12 text-center text-rose-500 font-bold">
+                    Database Connection Fault: Unable to resolve data logs pipeline.
+                </td>
+            </tr>`;
                     });
             }
         // Running Clock Frame Sync

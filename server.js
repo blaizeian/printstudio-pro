@@ -133,8 +133,10 @@ function isAuthenticated(req, res, next) {
 
 // ================= API ENDPOINT: GET HISTORICAL ARCHIVE =================
 app.get('/api/history', verifyRole(['admin', 'cashier']), async (req, res) => {
+    const { date } = req.query;
+
     try {
-        const [rows] = await db.execute(`
+        let sql = `
             SELECT 
                 o.id as tx_number, 
                 o.total_amount as total, 
@@ -145,11 +147,28 @@ app.get('/api/history', verifyRole(['admin', 'cashier']), async (req, res) => {
                 0 as unit_price,
                 u.username as cashier_name,
                 u.role as cashier_role
-            FROM orders o
+            FROM (
+                SELECT id FROM orders
+        `;
+
+        const queryParams = [];
+
+        if (date && date.trim() !== '') {
+            sql += ` WHERE DATE(created_at) = ? `;
+            queryParams.push(date.trim());
+        }
+
+        sql += ` 
+                ORDER BY id DESC
+                LIMIT 50
+            ) AS recent_orders
+            JOIN orders o ON recent_orders.id = o.id
             LEFT JOIN order_items oi ON o.id = oi.order_id
             LEFT JOIN users u ON o.user_id = u.id
             ORDER BY o.id DESC
-        `);
+        `;
+
+        const [rows] = await db.execute(sql, queryParams);
 
         const archiveMap = {};
         rows.forEach(row => {
@@ -189,7 +208,6 @@ app.get('/api/history', verifyRole(['admin', 'cashier']), async (req, res) => {
         res.status(500).json({ success: false, message: 'Database structural read failure.' });
     }
 });
-
 // Analytics API Endpoint
 app.get('/api/analytics', verifyRole(['admin']), async (req, res) => {
     const type = req.query.type || 'daily';
