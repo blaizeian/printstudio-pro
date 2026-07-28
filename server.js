@@ -1046,7 +1046,9 @@ app.get('/api/loans', verifyRole(['admin']), async (req, res) => {
     const connection = await db.getConnection();
     try {
         const [loans] = await connection.execute(
-            `SELECT id, total_amount, created_at, is_loan, customer_name, customer_phone, deposit_amount, loan_balance, loan_status 
+            `SELECT id, total_amount, 
+                    DATE_FORMAT(created_at, '%Y-%m-%d %H:%i:%s') AS created_at, 
+                    is_loan, customer_name, customer_phone, deposit_amount, loan_balance, loan_status 
              FROM orders 
              WHERE is_loan = 1 
              ORDER BY created_at DESC`

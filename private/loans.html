@@ -236,19 +236,18 @@
                 const tr = document.createElement('tr');
                 tr.className = "hover:bg-stone-900/40 transition-colors";
                 tr.innerHTML = `
-                    <td class="p-3 font-mono font-bold text-stone-300">#${loan.id}</td>
-                    <td class="p-3 text-stone-400">${new Date(loan.created_at).toLocaleString()}</td>
-                    <td class="p-3 font-semibold text-white">${loan.customer_name || 'N/A'}</td>
-                    <td class="p-3 text-stone-300">${loan.customer_phone || 'N/A'}</td>
-                    <td class="p-3 text-stone-300">${parseFloat(loan.total_amount).toFixed(2)}</td>
-                    <td class="p-3 text-stone-300">${parseFloat(loan.deposit_amount || 0).toFixed(2)}</td>
-                    <td class="p-3 font-black text-amber-400">${parseFloat(loan.loan_balance || 0).toFixed(2)}</td>
-                    <td class="p-3">${statusBadge}</td>
-                    <td class="p-3 text-right">${actionBtn}</td>
-                `;
+        <td class="p-3 font-mono font-bold text-stone-300">#${loan.id}</td>
+        <td class="p-3 text-stone-400">${loan.created_at}</td>
+        <td class="p-3 font-semibold text-white">${loan.customer_name || 'N/A'}</td>
+        <td class="p-3 text-stone-300">${loan.customer_phone || 'N/A'}</td>
+        <td class="p-3 text-stone-300">${parseFloat(loan.total_amount).toFixed(2)}</td>
+        <td class="p-3 text-stone-300">${parseFloat(loan.deposit_amount || 0).toFixed(2)}</td>
+        <td class="p-3 font-black text-amber-400">${parseFloat(loan.loan_balance || 0).toFixed(2)}</td>
+        <td class="p-3">${statusBadge}</td>
+        <td class="p-3 text-right">${actionBtn}</td>
+    `;
                 tbody.appendChild(tr);
             });
-
             document.getElementById('total-debt-display').innerText = totalDebt.toFixed(2);
         }
 
