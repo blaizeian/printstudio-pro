@@ -174,9 +174,13 @@
         </div>
 
         <!-- Graph Section -->
+        <!-- Graph Section -->
+        <!-- Graph Section -->
         <div class="bg-stone-950 p-6 rounded-2xl border border-stone-800 shadow-xl">
             <div class="overflow-x-auto">
-                <canvas id="salesChart" class="min-w-[650px] h-64"></canvas>
+                <div id="chart-wrapper" class="h-64" style="min-width: 100%;">
+                    <canvas id="salesChart" class="w-full h-full"></canvas>
+                </div>
             </div>
         </div>
     </main>
@@ -192,82 +196,88 @@
         let myChart;
 
         async function loadAnalytics() {
+                const btn = document.getElementById('apply-btn');
 
-            console.log("RUNNING: HTML inline script");
+                // 1. Visual Feedback: Change color and text while loading
+                if (btn) {
+                    btn.innerText = 'Loading...';
+                    btn.className = 'bg-stone-600 text-white text-xs font-bold px-6 py-2.5 rounded-xl transition-all';
+                }
 
+                await new Promise(resolve => setTimeout(resolve, 500));
+                // 1. Get elements safely (these match your new HTML IDs)
+                const type = document.getElementById('filter-type').value;
+                const start = document.getElementById('date-start').value;
+                const end = document.getElementById('date-end').value;
 
-            const btn = document.getElementById('apply-btn');
+                try {
+                    // 2. Build the URL dynamically
+                    // This matches the logic we put in your server.js
+                    let url = `/api/analytics?type=${type}&start=${start}&end=${end}`;
 
-            // 1. Visual Feedback: Change color and text while loading
-           if (btn) {
-                btn.innerText = 'Loading...';
-                btn.className = 'bg-stone-600 text-white text-xs font-bold px-6 py-2.5 rounded-xl transition-all';
-            }
+                    const response = await fetch(url);
+                    const data = await response.json();
 
-            await new Promise(resolve => setTimeout(resolve, 500));
-            // 1. Get elements safely (these match your new HTML IDs)
-            const type = document.getElementById('filter-type').value;
-            const start = document.getElementById('date-start').value;
-            const end = document.getElementById('date-end').value;
+                    if (data.success) {
+                        // Update Stats
+                        const rev = data.stats.totalRevenue || 0;
+                        const ord = data.stats.totalOrders || 0;
 
-            try {
-                // 2. Build the URL dynamically
-                // This matches the logic we put in your server.js
-                let url = `/api/analytics?type=${type}&start=${start}&end=${end}`;
+                        document.getElementById('stat-revenue').innerText = `ksh${parseFloat(rev).toLocaleString(undefined, { minimumFractionDigits: 2 })}`;
+                        document.getElementById('stat-orders').innerText = ord;
+                        document.getElementById('stat-aov').innerText = `ksh${(ord > 0 ? rev / ord : 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}`;
 
-                const response = await fetch(url);
-                const data = await response.json();
-
-                if (data.success) {
-                    // Update Stats
-                    const rev = data.stats.totalRevenue || 0;
-                    const ord = data.stats.totalOrders || 0;
-
-                    document.getElementById('stat-revenue').innerText = `ksh${parseFloat(rev).toLocaleString(undefined, { minimumFractionDigits: 2 })}`;
-                    document.getElementById('stat-orders').innerText = ord;
-                    document.getElementById('stat-aov').innerText = `ksh${(ord > 0 ? rev / ord : 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}`;
-
-                    // Render Chart
-                    const ctx = document.getElementById('salesChart').getContext('2d');
-                    if (myChart) myChart.destroy();
-
-                    myChart = new Chart(ctx, {
-                        type: 'line',
-                        data: {
-                            labels: data.chartData.map(d => d.label),
-                            datasets: [{
-                                label: 'Revenue (ksh)',
-                                data: data.chartData.map(d => d.total),
-                                borderColor: '#10b981',
-                                backgroundColor: 'rgba(16, 185, 129, 0.2)',
-                                fill: true,
-                                tension: 0.4,
-                                pointRadius: 4,
-                                pointBackgroundColor: '#fff'
-                            }]
-                        },
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            scales: {
-                                y: { beginAtZero: true, ticks: { callback: value => 'ksh' + value } }
-                            },
-                            plugins: { legend: { display: false } }
+                        // Dynamic sizing on the wrapper element (made daily and monthly more compact to avoid excessive scrolling)
+                        const chartWrapper = document.getElementById('chart-wrapper');
+                        if (chartWrapper) {
+                            if (type === 'daily') {
+                                chartWrapper.style.minWidth = '550px'; // More compact daily view to reduce scrolling
+                            } else if (type === 'monthly') {
+                                chartWrapper.style.minWidth = '750px'; // Compact 30-day view
+                            } else {
+                                chartWrapper.style.minWidth = '100%';
+                            }
                         }
-                    });
-                }
-            } catch (err) {
-                console.error("Analytics sync error:", err);
-            } finally {
-                // 2. Reset Button: Change back to emerald
-               if (btn) {
-                    btn.innerText = 'Apply Filter';
-                    btn.className = 'bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-6 py-2.5 rounded-xl transition-all shadow-lg shadow-emerald-900/20';
+
+                        // Render Chart
+                        const ctx = document.getElementById('salesChart').getContext('2d');
+                        if (myChart) myChart.destroy();
+
+                        myChart = new Chart(ctx, {
+                            type: 'line',
+                            data: {
+                                labels: data.chartData.map(d => d.label),
+                                datasets: [{
+                                    label: 'Revenue (ksh)',
+                                    data: data.chartData.map(d => d.total),
+                                    borderColor: '#10b981',
+                                    backgroundColor: 'rgba(16, 185, 129, 0.2)',
+                                    fill: true,
+                                    tension: 0.4,
+                                    pointRadius: 4,
+                                    pointBackgroundColor: '#fff'
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                scales: {
+                                    y: { beginAtZero: true, ticks: { callback: value => 'ksh' + value } }
+                                },
+                                plugins: { legend: { display: false } }
+                            }
+                        });
+                    }
+                } catch (err) {
+                    console.error("Analytics sync error:", err);
+                } finally {
+                    // 2. Reset Button: Change back to emerald
+                    if (btn) {
+                        btn.innerText = 'Apply Filter';
+                        btn.className = 'bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-6 py-2.5 rounded-xl transition-all shadow-lg shadow-emerald-900/20';
+                    }
                 }
             }
-
-        }
-
         // Live Clock
         setInterval(() => {
             const el = document.getElementById('live-clock');
