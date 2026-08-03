@@ -214,28 +214,41 @@ app.get('/api/analytics', verifyRole(['admin']), async (req, res) => {
     const type = req.query.type || 'daily';
     const today = new Date().toISOString().split('T')[0];
     const start = (req.query.start && req.query.start !== "") ? req.query.start : today;
-    const end = (req.query.end && req.query.end !== "") ? req.query.end : today;
+    let end = (req.query.end && req.query.end !== "") ? req.query.end : today;
+
+    // Enforce Max Date Ranges for Weekly (7 days max) and Monthly (31 days max)
+    const startDateObj = new Date(start);
+    let endDateObj = new Date(end);
+
+    if (type === 'weekly') {
+        const maxEnd = new Date(startDateObj);
+        maxEnd.setDate(startDateObj.getDate() + 6);
+        if (endDateObj > maxEnd) {
+            endDateObj = maxEnd;
+        }
+    } else if (type === 'monthly') {
+        const maxEnd = new Date(startDateObj);
+        maxEnd.setDate(startDateObj.getDate() + 30);
+        if (endDateObj > maxEnd) {
+            endDateObj = maxEnd;
+        }
+    }
+    end = endDateObj.toISOString().split('T')[0];
 
     let sqlQuery = '';
     let params = [];
     let isYearly = (type === 'yearly');
 
     if (type === 'daily') {
-        sqlQuery = `SELECT DATE_FORMAT(created_at, '%H:00') as label, SUM(total_amount) as total 
+        sqlQuery = `SELECT HOUR(created_at) as hour_num, DATE_FORMAT(created_at, '%H:00') as label, SUM(total_amount) as total 
                     FROM orders WHERE DATE(created_at) = ? 
                     GROUP BY HOUR(created_at), DATE_FORMAT(created_at, '%H:00') 
                     ORDER BY HOUR(created_at) ASC`;
         params = [start];
-    } else if (type === 'weekly') {
-        sqlQuery = `SELECT DATE_FORMAT(created_at, '%a %d') as label, SUM(total_amount) as total 
+    } else if (type === 'weekly' || type === 'monthly') {
+        sqlQuery = `SELECT DATE(created_at) as order_date, DATE_FORMAT(created_at, '${type === 'weekly' ? '%a %d' : '%b %d'}') as label, SUM(total_amount) as total 
                     FROM orders WHERE DATE(created_at) BETWEEN ? AND ? 
-                    GROUP BY DATE(created_at), DATE_FORMAT(created_at, '%a %d') 
-                    ORDER BY DATE(created_at) ASC`;
-        params = [start, end];
-    } else if (type === 'monthly') {
-        sqlQuery = `SELECT DATE_FORMAT(created_at, '%b %d') as label, SUM(total_amount) as total 
-                    FROM orders WHERE DATE(created_at) BETWEEN ? AND ? 
-                    GROUP BY DATE(created_at), DATE_FORMAT(created_at, '%b %d') 
+                    GROUP BY DATE(created_at), DATE_FORMAT(created_at, '${type === 'weekly' ? '%a %d' : '%b %d'}') 
                     ORDER BY DATE(created_at) ASC`;
         params = [start, end];
     } else if (type === 'yearly') {
@@ -248,10 +261,47 @@ app.get('/api/analytics', verifyRole(['admin']), async (req, res) => {
 
     try {
         const [rawChartData] = await db.execute(sqlQuery, params);
+        let chartData = [];
 
-        let chartData = rawChartData;
+        if (type === 'daily') {
+            // Fill all 24 hours (0 to 23)
+            chartData = Array.from({ length: 24 }, (_, i) => {
+                const hourStr = String(i).padStart(2, '0') + ':00';
+                const found = rawChartData.find(row => row.hour_num === i);
+                return {
+                    label: hourStr,
+                    total: found ? parseFloat(found.total) : 0
+                };
+            });
+        } else if (type === 'weekly' || type === 'monthly') {
+            // Fill every single calendar day between start and end dates
+            const startDate = new Date(start);
+            const endDate = new Date(end);
+            chartData = [];
 
-        if (isYearly) {
+            let curr = new Date(startDate);
+            while (curr <= endDate) {
+                const dateString = curr.toISOString().split('T')[0];
+
+                // Format label to match SQL format ('%a %d' or '%b %d')
+                const options = type === 'weekly'
+                    ? { weekday: 'short', day: '2-digit' }
+                    : { month: 'short', day: '2-digit' };
+                const labelStr = curr.toLocaleDateString('en-US', options).replace(',', '');
+
+                const found = rawChartData.find(row => {
+                    const rowDateStr = new Date(row.order_date).toISOString().split('T')[0];
+                    return rowDateStr === dateString;
+                });
+
+                chartData.push({
+                    label: labelStr,
+                    total: found ? parseFloat(found.total) : 0
+                });
+
+                curr.setDate(curr.getDate() + 1);
+            }
+        } else if (isYearly) {
             const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
             chartData = monthNames.map((name, index) => {
                 const found = rawChartData.find(row => row.month_num === (index + 1));
